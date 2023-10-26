@@ -1,8 +1,8 @@
 class BaseComponent:
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         pass
 
-    def handle_message(self, msg, game):
+    def handle_message(self, msg, gameState):
         # decode recieved message
         # update game state
         # queue message to send (optional)

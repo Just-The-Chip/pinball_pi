@@ -9,7 +9,7 @@ curpath = os.path.abspath(os.path.join(__file__, os.pardir))
 if(curpath not in sys.path):
     sys.path.append(curpath)
 
-from base_comm import BaseComm
+from comm.base_comm import BaseComm
 
 if __name__ == '__main__':
     comm2 = BaseComm(port="/dev/ttyACM_ARDUINO2")
