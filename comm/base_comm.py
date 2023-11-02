@@ -19,11 +19,11 @@ class BaseComm:
             print(f"in waiting: {str(self.serial.in_waiting)}")
 
         while self.serial.in_waiting >= self.message_size:
-            line = self.serial.readline()
+            line = self.serial.readline().decode('utf-8')
             
             # if line doesn't end with EOL character DUMP IT IN THE TRASH!!!!
             if '\\n'in str(line): 
-                messages.append(line.decode('utf-8').rstrip())
+                messages.append(line.rstrip().encode("utf-8"))
                 lines_read += 1
                 print(f"lines read: {lines_read}")
             else: 

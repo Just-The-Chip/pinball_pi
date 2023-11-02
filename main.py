@@ -28,7 +28,7 @@ if __name__ == '__main__':
             print(f"Click count: {click_count}")
 
         for message in messages:
-            if message == "one":
+            if message.decode("utf-8") == "one":
                 comm2.write_message("two\n")
                 # print("writing message")
             else:

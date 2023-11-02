@@ -15,13 +15,15 @@ class Game:
 
     # state handlers check the overall state and makes additional changes to the state accordingly
     #   as well as queue up messages if certain conditions in the state are met.
-    #   all state handlers are called at the end of the loop.
+    #   all state handlers are called near the end of the loop.
     #   Examples:
     #   - increase a multiplier
     #   - enable a 2nd tier flipper
     #   - release multiball
     #   - reset drop targets
     state_handlers = []
+
+    in_progress = False
 
     def __init__(self, comm_handler) -> None:
         # just start a new game for now but later we will wait for a start signal
@@ -38,9 +40,36 @@ class Game:
         # send start signal to comms to enable inputs
         # disable start handler/enable message and state handlers?
         self.state = State()
+        self.in_progress = True
+
+    def loop(self):
+        while self.in_progress:
+            self.handle_incoming_messages()
+            self.handle_state()
+            self.comm_handler.write_all_queued()
+
+        self.end()
 
     def end(self):
         # save high score
         # send end signal to comms to disable inputs, do light patterns, etc.
         # enable start handler/disable message and state handlers?
-        pass 
+        self.in_progress = False
+
+    # 00000000  0000 0000
+    # ---id---  ---msg---
+    def handle_incoming_messages(self):
+        messages = self.comm_handler.read_all()
+
+        for id_message in messages:
+            id = (id_message >> 8)
+            message = id_message & 255
+
+            if id in self.message_handlers:
+                self.message_handlers[id](message, self.state)
+            else:
+                print(f"component id not found: {str(id)}")
+
+    def handle_state(self):
+        for handler in self.state_handlers:
+            handler(self.state)
