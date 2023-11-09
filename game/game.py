@@ -1,11 +1,12 @@
 from state import State
 from comm.comm_handler import CommHandler
 
+
 class Game:
 
     # message handlers are responsible for interpreting comm messages and changing state and are
-    #   called at the beginning of the loop if a message is recieved with a handler's assigned ID.  
-    #   they may also queue messages to send to the light comm.
+    #   called at the beginning of the loop if a message is recieved with a handler's assigned ID.
+    #   they return a list of 0 to many (comm_name, message) tuples to add to the comm write queue
     #   Examples:
     #   - add points
     #   - decrease balls remaining
@@ -14,8 +15,8 @@ class Game:
     message_handlers = {}
 
     # state handlers check the overall state and makes additional changes to the state accordingly
-    #   as well as queue up messages if certain conditions in the state are met.
-    #   all state handlers are called near the end of the loop.
+    #   as well return a list of 0 to many (comm_name, message) tuples to add to the comm write queue
+    #   if certain conditions in the state are met. all state handlers are called near the end of the loop.
     #   Examples:
     #   - increase a multiplier
     #   - enable a 2nd tier flipper
@@ -60,16 +61,26 @@ class Game:
     # ---id---  ---msg---
     def handle_incoming_messages(self):
         messages = self.comm_handler.read_all()
+        result_queue = []  # list of tuple results consisting of comm name and message
 
         for id_message in messages:
             id = (id_message >> 8)
             message = id_message & 255
 
             if id in self.message_handlers:
-                self.message_handlers[id](message, self.state)
+                result_queue.extend(
+                    self.message_handlers[id](message, self.state))
             else:
                 print(f"component id not found: {str(id)}")
 
+        for comm_name, result_message in result_queue:
+            self.comm_handler.queue_message(comm_name, result_message)
+
     def handle_state(self):
+        result_queue = []  # list of tuple results consisting of comm name and message
+
         for handler in self.state_handlers:
-            handler(self.state)
+            result_queue.extend(handler(self.state))
+
+        for comm_name, result_message in result_queue:
+            self.comm_handler.queue_message(comm_name, result_message)

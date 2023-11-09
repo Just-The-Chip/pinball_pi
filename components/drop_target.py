@@ -1,10 +1,53 @@
+from comm.comm_handler import COMM_SERVOS
+
+
 class DropTarget:
     def __init__(self, **kwargs) -> None:
         self.id = kwargs.pop("id")
+        self.group_id = kwargs.pop("group_id")
 
     def handle_message(self, message, gameState):
-        pass
+        if int.from_bytes(message, "big") > 0:
+            gameState.set_drop_target(self.group_id, self.id, True)
+
+        return []  # once lights is hooked up we can add message to send to lights
+
 
 class DropTargetGroup:
-    def __init__(self) -> None:
-        pass
+    targets = {}
+
+    def __init__(self, **kwargs) -> None:
+        self.group_id = kwargs.pop("group_id")
+        self.build_targets(kwargs.pop("target_ids"))
+
+    def build_targets(self):
+        for target_id in self.target_ids:
+            self.targets[target_id] = DropTarget(
+                group_id=self.group_id, id=target_id)
+
+    def register_message_handlers(self, game):
+        for target_id, target in self.targets:
+            game.register_message_handler(target_id, target.handle_message)
+
+    def is_group_fully_triggered(self, gameState):
+        state = gameState.drop_target_group(self.group_id)
+
+        total_state = True
+
+        for target_id in self.targets:
+            total_state = total_state and state.get(target_id, False)
+
+        return total_state
+
+    def reset_if_all_triggered(self, gameState):
+        return self.reset_targets() if self.is_group_fully_triggered(gameState) else []
+
+    def reset_targets(self):
+        result_queue = []
+
+        for target_id in self.targets:
+            message = (target_id << 8) | 1
+            result_queue.append(
+                (COMM_SERVOS, message.to_bytes(2, "big") + b'\n'))
+
+        return result_queue
