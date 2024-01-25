@@ -1,4 +1,4 @@
-from comm.comm_handler import COMM_SERVOS
+# from comm.constants import COMM_SERVOS
 
 
 class DropTarget:
@@ -48,6 +48,6 @@ class DropTargetGroup:
         for target_id in self.targets:
             message = (target_id << 8) | 1
             result_queue.append(
-                (COMM_SERVOS, message.to_bytes(2, "big") + b'\n'))
+                ("servos", message.to_bytes(2, "big") + b'\n'))
 
         return result_queue

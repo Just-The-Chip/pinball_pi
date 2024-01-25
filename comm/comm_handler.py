@@ -1,7 +1,3 @@
-COMM_LIGHTS = "lights"
-COMM_SERVOS = "servos"
-COMM_SOLENOIDS = "solenoids"
-
 class CommHandler:
 
     comms = {}
@@ -17,10 +13,10 @@ class CommHandler:
     def read_all(self):
         messages = []
         for comm in self.comms.values():
-            messages.extend(comm.read_buffer)
+            messages.extend(comm.read_buffer())
 
         return messages
-    
+
     def write_all_queued(self):
         for comm_name in self.write_queue:
             self.write_queued(comm_name)
@@ -35,7 +31,3 @@ class CommHandler:
 
     def queue_message(self, comm_name, message):
         self.write_queue[comm_name].append(message)
-
-
-
-    

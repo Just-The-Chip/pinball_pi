@@ -1,4 +1,4 @@
-from state import State
+from game.state import State
 from comm.comm_handler import CommHandler
 
 
@@ -63,6 +63,7 @@ class Game:
         messages = self.comm_handler.read_all()
         result_queue = []  # list of tuple results consisting of comm name and message
 
+        # print(f"message count: {len(messages)}")
         for id_message in messages:
             id = (id_message >> 8)
             message = id_message & 255

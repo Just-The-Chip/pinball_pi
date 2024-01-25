@@ -20,6 +20,7 @@ class State:
 
     def add_points(self, points):
         self.score = self.score + points * self.stacked_multiplier()
+        print(f"Points: {self.score}")
 
     def set_drop_target(self, group_id, target_id, value):
         if group_id not in self.drop_target_groups:
