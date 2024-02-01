@@ -24,11 +24,11 @@ class BaseComm:
         while self.serial.in_waiting >= self.message_size:
             print(
                 f"current waiting: {self.serial.in_waiting}............................")
-            line = self.serial.readline().decode('utf-8')
+            line = self.serial.readline()
 
             # if line doesn't end with EOL character DUMP IT IN THE TRASH!!!!
             if '\\n' in str(line):
-                messages.append(line.rstrip().encode("utf-8"))
+                messages.append(line.rstrip())
                 lines_read += 1
                 print(f"lines read: {lines_read}")
             else:
@@ -37,4 +37,5 @@ class BaseComm:
         return messages
 
     def write_message(self, message):
+        # this might be wrong but we haven't hooked up a component that requires it yets
         self.serial.write(message.encode("utf-8"))

@@ -65,8 +65,9 @@ class Game:
 
         # print(f"message count: {len(messages)}")
         for id_message in messages:
-            id = (id_message >> 8)
-            message = id_message & 255
+            int_message = int.from_bytes(id_message, byteorder="big")
+            id = (int_message >> 8)
+            message = int_message & 255
 
             if id in self.message_handlers:
                 result_queue.extend(

@@ -6,3 +6,4 @@ class PointsSwitch:
 
     def handle_message(self, msg, gameState):
         gameState.add_points(self.base_points)
+        return []  # must return empty results
