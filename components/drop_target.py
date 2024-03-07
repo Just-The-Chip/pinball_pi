@@ -40,7 +40,13 @@ class DropTargetGroup:
         return total_state
 
     def reset_if_all_triggered(self, gameState):
-        return self.reset_targets() if self.is_group_fully_triggered(gameState) else []
+        if not self.is_group_fully_triggered(gameState):
+            return []
+
+        for target_id in self.targets:
+            gameState.set_drop_target(self.group_id, target_id, False)
+
+        return self.reset_targets()
 
     def reset_targets(self):
         result_queue = []

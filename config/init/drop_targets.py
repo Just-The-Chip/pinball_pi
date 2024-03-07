@@ -1,6 +1,6 @@
 # from components.drop_target import DropTargetGroup
 
-# test_group = DropTargetGroup("test_group", (3, 4, 5))
+# test_group = DropTargetGroup(group_id="test_group", target_ids=(11, 12, 13))
 
 
 # def init_drop_targets(game):
