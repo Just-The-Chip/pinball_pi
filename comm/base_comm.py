@@ -38,4 +38,4 @@ class BaseComm:
 
     def write_message(self, message):
         # this might be wrong but we haven't hooked up a component that requires it yets
-        self.serial.write(message.encode("utf-8"))
+        self.serial.write(message)
