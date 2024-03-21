@@ -31,4 +31,5 @@ def init_pop_bumpers(game):
     game.register_message_handler(7, left_target1.handle_message)
     game.register_message_handler(8, left_target2.handle_message)
     game.register_message_handler(9, left_target3.handle_message)
-    game.register_message_handler(10, left_target4.handle_message)
+    # 10 is ascii for \n so we skip
+    game.register_message_handler(11, left_target4.handle_message)
