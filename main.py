@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from rgbmatrix import graphics
 from game.game import Game
 from config.init.drop_targets import init_drop_targets
 from config.init.pop_bumpers import init_pop_bumpers
@@ -22,10 +23,13 @@ if __name__ == '__main__':
         COMM_SOLENOIDS, BaseComm(port="/dev/ttyACM_ARDUINO3", message_size=3))
     comm_handler.register_comm(
         COMM_SERVOS, BaseComm(port="/dev/ttyACM_ARDUINO1", message_size=3))
-    # comm_handler.register_comm(
-    #     COMM_LIGHTS, BaseComm(port="/dev/ttyACM_ARDUINO2", message_size=3))
+    comm_handler.register_comm(
+        COMM_LIGHTS, BaseComm(port="/dev/ttyACM_ARDUINO2", message_size=3))
 
-    game = Game(comm_handler)
+    font = graphics.Font()
+    font.LoadFont("../rpi-rgb-led-matrix/fonts/5x8.bdf")
+
+    game = Game(comm_handler, font)
 
     init_pop_bumpers(game)
     init_drop_targets(game)

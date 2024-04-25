@@ -1,21 +1,21 @@
 from components.points_switch import PointsSwitch
 
 # slingshots (maybe I'll move this later)
-leftSling = PointsSwitch(points_value=5)
-rightSling = PointsSwitch(points_value=5)
+leftSling = PointsSwitch(points_value=50)
+rightSling = PointsSwitch(points_value=50)
 
 # top bumper
-pop_bumper1 = PointsSwitch(points_value=50)
+pop_bumper1 = PointsSwitch(points_value=500)
 
 # side bumpers
-pop_bumper2 = PointsSwitch(points_value=15)
-pop_bumper3 = PointsSwitch(points_value=15)
+pop_bumper2 = PointsSwitch(points_value=150)
+pop_bumper3 = PointsSwitch(points_value=150)
 
 # left static targets
-left_target1 = PointsSwitch(points_value=10)
-left_target2 = PointsSwitch(points_value=10)
-left_target3 = PointsSwitch(points_value=10)
-left_target4 = PointsSwitch(points_value=10)
+left_target1 = PointsSwitch(points_value=100)
+left_target2 = PointsSwitch(points_value=100)
+left_target3 = PointsSwitch(points_value=100)
+left_target4 = PointsSwitch(points_value=100)
 
 
 def init_pop_bumpers(game):

@@ -1,4 +1,5 @@
 from game.state import State
+from game.screen import Screen
 from comm.comm_handler import CommHandler
 
 
@@ -26,9 +27,10 @@ class Game:
 
     in_progress = False
 
-    def __init__(self, comm_handler) -> None:
+    def __init__(self, comm_handler, font) -> None:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
+        self.screen = Screen(font=font)
         self.start()
 
     def register_message_handler(self, id, handler):
@@ -48,6 +50,7 @@ class Game:
             self.handle_incoming_messages()
             self.handle_state()
             self.comm_handler.write_all_queued()
+            self.update_screen()
 
         self.end()
 
@@ -86,3 +89,7 @@ class Game:
 
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)
+
+    def update_screen(self):
+        self.screen.set_display_score(self.state.score)
+        self.screen.update()
