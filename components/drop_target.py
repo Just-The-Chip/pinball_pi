@@ -1,4 +1,5 @@
-# from comm.constants import COMM_SERVOS
+from comm.constants import COMM_SERVOS
+from comm.util import build_component_message
 
 
 class DropTarget:
@@ -8,6 +9,7 @@ class DropTarget:
 
     def handle_message(self, message, gameState):
         print(message)
+        print(f"drop target {str(self.id)} fired!")
         if message > 0:
             gameState.set_drop_target(self.group_id, self.id, True)
 
@@ -53,8 +55,7 @@ class DropTargetGroup:
         result_queue = []
 
         for target_id in self.targets:
-            message = (target_id << 8) | 1
-            result_queue.append(
-                ("servos", message.to_bytes(2, "big") + b'\n'))
+            message = build_component_message(target_id)
+            result_queue.append((COMM_SERVOS, message))
 
         return result_queue

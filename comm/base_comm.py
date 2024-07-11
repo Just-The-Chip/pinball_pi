@@ -26,6 +26,9 @@ class BaseComm:
                 f"current waiting: {self.serial.in_waiting}............................")
             line = self.serial.readline()
 
+            if len(line) > self.message_size:
+                print(f"Line to long: {str(line)}")
+
             # if line doesn't end with EOL character DUMP IT IN THE TRASH!!!!
             if '\\n' in str(line):
                 messages.append(line.rstrip())
