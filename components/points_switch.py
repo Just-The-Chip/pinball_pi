@@ -6,9 +6,9 @@ class PointsSwitch:
     def __init__(self, **kwargs) -> None:
         self.base_points = kwargs.pop("points_value", 5)
         self.light_group_id = kwargs.pop("light_group_id", None)
+        self.pattern_id = kwargs.pop("pattern_id", 1)
 
         # this implementation does kind of require the python code to know w
-        self.pattern_id = 1  # 1 is flash now i've decided.
         self.variant_id = 0  # for now nothing fancy, just a simple flash
 
     def handle_message(self, msg, gameState):
