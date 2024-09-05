@@ -3,6 +3,7 @@ from rgbmatrix import graphics
 from game.game import Game
 from config.init.drop_targets import init_drop_targets
 from config.init.pop_bumpers import init_pop_bumpers
+from config.init.mag_bridge import init_mag_bridge
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS
@@ -33,6 +34,7 @@ if __name__ == '__main__':
 
     init_pop_bumpers(game)
     init_drop_targets(game)
+    init_mag_bridge(game)
 
     game.start()
     game.loop()
