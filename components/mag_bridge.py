@@ -14,12 +14,14 @@ class MagBridge:
         self.state_group = kwargs.pop("state_group")
 
         target_points = kwargs.pop("target_points", 0)
-        self.build_targets(kwargs.pop("target_ids"), target_points)
+        self.build_targets(kwargs.pop("target_settings"), target_points)
 
-    def build_targets(self, target_ids, target_points):
-        for target_id in target_ids:
+    def build_targets(self, target_settings, target_points):
+        for target in target_settings:
+            target_id = target["component_id"]
+            light_group_id = target["light_group_id"]
             self.targets[target_id] = StateSwitch(
-                state_key=(self.state_group, target_id), toggle=False, points_value=target_points)
+                state_key=(self.state_group, target_id), toggle=False, points_value=target_points, light_group_id=light_group_id)
 
     def register_message_handlers(self, game):
         for target_id, target in self.targets.items():
