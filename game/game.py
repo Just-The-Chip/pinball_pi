@@ -38,6 +38,7 @@ class Game:
 
     def register_state_handler(self, handler):
         self.state_handlers.append(handler)
+        print(f"state handlers: {str(len(self.state_handlers))}")
 
     def start(self):
         # send start signal to comms to enable inputs
@@ -51,6 +52,7 @@ class Game:
             self.handle_state()
             self.comm_handler.write_all_queued()
             self.update_screen()
+            self.state.commit_changes()
 
         self.end()
 
@@ -86,6 +88,9 @@ class Game:
 
         for handler in self.state_handlers:
             result_queue.extend(handler(self.state))
+
+        if (len(result_queue) > 0):
+            print(f"RESULT QUEUE: {len(result_queue)}-----------------------")
 
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)

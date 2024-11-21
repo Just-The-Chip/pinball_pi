@@ -8,3 +8,11 @@ def build_light_message(group_id, pattern_id, variant_id=0, option_value=0):
     message = (group_id << 24) | (pattern_id << 16) | (
         variant_id << 8) | option_value
     return message.to_bytes(4, "big") + b'\n'
+
+
+def build_light_off_message(group_id):
+    return build_light_message(group_id, 0, 0)
+
+
+def build_light_error_message(group_id):
+    return build_light_message(group_id, 1, 0)

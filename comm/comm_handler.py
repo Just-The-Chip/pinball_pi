@@ -27,7 +27,7 @@ class CommHandler:
 
         while len(queue) > 0:
             message = queue.pop(0)
-            print("WRITING MESSAGE:")
+            print(f"WRITING MESSAGE ({comm_name}):")
             print(message)
             comm.write_message(message)
 

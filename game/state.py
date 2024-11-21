@@ -1,8 +1,16 @@
+import copy
+
+
 class State:
     balls_remaining = 3
     score = 0
 
+    previous_state_data = {}
+
     state_data = {
+        "mag_bridge_is_traveling": False,
+        "mag_bridge_is_active": False,
+        "mag_bridge_error": False,
         "mag_bridge_switches": {}
     }
 
@@ -53,15 +61,29 @@ class State:
                     parent[next_key] = {}
                 parent = parent[next_key]
 
-    def get_state(self, keys, default):
+    def get_state(self, keys, default, getPrevious=False):
         keys = [keys] if isinstance(keys, str) else list(keys)
         if len(keys) < 1:
             raise ValueError('must provide key')
 
-        val = self.state_data
+        state_dic = self.previous_state_data if getPrevious else self.state_data
+        val = state_dic
         for key in keys:
             if key not in val:
                 return default
 
             val = val[key]
         return val
+
+    def get_state_change(self, keys, default):
+        return {
+            "from": self.get_state(keys, default, True),
+            "to": self.get_state(keys, default)
+        }
+
+    def has_state_changed(self, keys, default):
+        change = self.get_state_change(keys, default)
+        return change["from"] is not change["to"]
+
+    def commit_changes(self):
+        self.previous_state_data = copy.deepcopy(self.state_data)

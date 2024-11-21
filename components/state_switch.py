@@ -3,6 +3,7 @@
 from comm.constants import COMM_LIGHTS
 from comm.util import build_light_message
 
+
 class StateSwitch:
     def __init__(self, **kwargs) -> None:
         # self.id = kwargs.pop("id")
@@ -24,7 +25,8 @@ class StateSwitch:
 
             if new_state:
                 gameState.add_points(self.base_points)
-                return [self.build_light_message()]
+
+            return self.build_light_message(gameState)
 
         return []  # once lights is hooked up we can add message to send to lights
 
@@ -34,10 +36,12 @@ class StateSwitch:
         gameState.set_state(self.state_key, new_state)
 
         return new_state
-    
-    def build_light_message(self):
-        if self.light_group_id is not None:
-            
-            return (COMM_LIGHTS, build_light_message(self.light_group_id, self.pattern_id, self.variant_id))
 
-# TODO: state handler to set "mag_bridge_active" to true
+    def build_light_message(self, gameState):
+        if self.light_group_id is not None:
+            current_state = gameState.get_state(self.state_key, False)
+            pattern_id = self.pattern_id if current_state else 0
+            variant_id = self.variant_id if current_state else 0
+            return [(COMM_LIGHTS, build_light_message(self.light_group_id, pattern_id, variant_id))]
+
+        return []
