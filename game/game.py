@@ -34,7 +34,10 @@ class Game:
         self.start()
 
     def register_message_handler(self, id, handler):
-        self.message_handlers[id] = handler
+        if id not in self.message_handlers:
+            self.message_handlers[id] = []
+
+        self.message_handlers[id].append(handler)
 
     def register_state_handler(self, handler):
         self.state_handlers.append(handler)
@@ -74,10 +77,12 @@ class Game:
             id = (int_message >> 8)
             message = int_message & 255
 
-            if id in self.message_handlers:
+            handlers = self.message_handlers.get(id, [])
+            for handler in handlers:
                 result_queue.extend(
-                    self.message_handlers[id](message, self.state))
-            else:
+                    handler(message, self.state))
+
+            if len(handlers) == 0:
                 print(f"component id not found: {str(id)}")
 
         for comm_name, result_message in result_queue:
