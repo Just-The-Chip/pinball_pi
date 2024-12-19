@@ -70,7 +70,9 @@ class MagBridge:
             if gameState.get_state("mag_bridge_error", False):
                 print("The mag bridge has errored out. Restart to attempt to fix it.")
             else:
-                self.trigger_bridge(gameState)
+                return self.trigger_bridge(gameState)
+
+        return []
 
     def reject_ball(self, gameState):
         return [(COMM_SOLENOIDS, build_component_message(self.rejector_id))]

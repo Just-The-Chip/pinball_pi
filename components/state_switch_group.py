@@ -16,13 +16,17 @@ class StateSwitchGroup:
     def build_targets(self, target_settings, target_points):
         for index, target in enumerate(target_settings):
             light_group_id = target.get("light_group_id")
+            pattern_id = target.get("pattern_id", 2)
+            variant_id = target.get("variant_id", 3)
             points = target.get("points") or target_points
             self.targets.append(
                 StateSwitch(
                     state_key=(self.state_group, index),
                     toggle=False,
                     points_value=points,
-                    light_group_id=light_group_id
+                    light_group_id=light_group_id,
+                    pattern_id=pattern_id,
+                    variant_id=variant_id
                 )
             )
 
