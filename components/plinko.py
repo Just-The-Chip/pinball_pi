@@ -21,6 +21,11 @@ class Plinko:
 
         return []
 
+    def update_multiplier(self, gameState):
+        gameState.set_multiplier("plinko", self.switch_group.triggered_count(gameState))
+
+        return []
+
     def start_lift(self):
         return [(COMM_SOLENOIDS, build_component_message(self.lift_id))]
 

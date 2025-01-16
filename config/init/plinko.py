@@ -23,3 +23,4 @@ def init_plinko(game):
     plinko.register_message_handlers(game)
 
     game.register_state_handler(plinko.handle_plinko_start)
+    game.register_state_handler(plinko.update_multiplier)

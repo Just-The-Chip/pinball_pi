@@ -27,10 +27,10 @@ class Game:
 
     in_progress = False
 
-    def __init__(self, comm_handler, font) -> None:
+    def __init__(self, comm_handler, font, multiplier_font) -> None:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
-        self.screen = Screen(font=font)
+        self.screen = Screen(font=font, multiplier_font=multiplier_font)
         self.start()
 
     def register_message_handler(self, id, handler):
@@ -102,4 +102,5 @@ class Game:
 
     def update_screen(self):
         self.screen.set_display_score(self.state.score)
+        self.screen.set_multiplier(self.state.stacked_multiplier())
         self.screen.update()

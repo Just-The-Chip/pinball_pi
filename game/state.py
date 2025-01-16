@@ -5,6 +5,10 @@ class State:
     balls_remaining = 3
     score = 0
 
+    multipliers = {
+        "plinko": 0
+    }
+
     previous_state_data = {}
 
     state_data = {
@@ -26,13 +30,15 @@ class State:
         pass
 
     def stacked_multiplier(self):
-        # over time as we think of more multipliers, this function will calculate the total
-        # multiplier based on which ones are active
-        return 1
+        multiplier = 1
+        for value in self.multipliers.values():
+            multiplier += value
+
+        return multiplier
 
     def add_points(self, points):
         self.score = self.score + points * self.stacked_multiplier()
-        print(f"Points: {self.score}")
+        print(f"Points: {self.stacked_multiplier()} x {points} -> {self.score}")
 
     def set_drop_target(self, group_id, target_id, value):
         if group_id not in self.drop_target_groups:
@@ -42,6 +48,13 @@ class State:
 
     def drop_target_group(self, group_id):
         return self.drop_target_groups.get(group_id, {})
+
+    def set_multiplier(self, multiplier_name, value):
+        self.multipliers[multiplier_name] = value
+
+    def reset_multipliers(self):
+        for multiplier_name in self.multipliers:
+            self.multipliers[multiplier_name] = 0
 
     # may refactor to have drop targets just use this instead but for now they are separate
     def set_state(self, keys, value):

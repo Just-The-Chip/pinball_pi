@@ -29,9 +29,11 @@ if __name__ == '__main__':
         COMM_LIGHTS, BaseComm(port="/dev/ttyACM_ARDUINO2", message_size=3))
 
     font = graphics.Font()
-    font.LoadFont("../rpi-rgb-led-matrix/fonts/5x8.bdf")
+    font.LoadFont("../rpi-rgb-led-matrix/fonts/6x10.bdf")
+    multiplier_font = graphics.Font()
+    multiplier_font.LoadFont("../rpi-rgb-led-matrix/fonts/5x8.bdf")
 
-    game = Game(comm_handler, font)
+    game = Game(comm_handler, font, multiplier_font)
 
     init_pop_bumpers(game)
     init_drop_targets(game)

@@ -10,6 +10,8 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
 class Screen(object):
     def __init__(self, *args, **kwargs):
         self.font = kwargs.get("font")
+        self.multiplier_font = kwargs.get("multiplier_font")
+        self.multiplier_color = graphics.Color(255, 64, 10)
 
         self.set_random_text_color()
 
@@ -22,6 +24,7 @@ class Screen(object):
 
         self.offscreen_canvas = self.matrix.CreateFrameCanvas()
         self.display_score = 0
+        self.multiplier = 1
         self.last_canvas_update = 0
 
     def set_random_text_color(self):
@@ -39,6 +42,9 @@ class Screen(object):
             self.set_random_text_color()
 
         self.display_score = score
+
+    def set_multiplier(self, multiplier):
+        self.multiplier = multiplier
 
     def setup_matrix(self):
         options = RGBMatrixOptions()
@@ -62,4 +68,6 @@ class Screen(object):
 
             self.offscreen_canvas.Clear()
             graphics.DrawText(self.offscreen_canvas, self.font,
-                              5, 10, self.text_color, str(self.display_score))
+                              2, 10, self.text_color, str(self.display_score))
+            graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                              2, 30, self.multiplier_color, f"x{str(self.multiplier)}")

@@ -44,6 +44,16 @@ class StateSwitchGroup:
 
         return total_state
 
+    def triggered_count(self, gameState):
+        state = gameState.get_state(self.state_group, {})
+
+        num_triggered = 0
+        for index in range(len(self.targets)):
+            if state.get(index, False):
+                num_triggered += 1
+
+        return num_triggered
+
     # def shift_state_group(self, gameState, reverse=False):
     #     current_state = gameState.get_state(self.state_group, {}).copy
     #     result_queue = []
