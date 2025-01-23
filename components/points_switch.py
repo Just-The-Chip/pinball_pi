@@ -7,6 +7,7 @@ class PointsSwitch:
         self.base_points = kwargs.pop("points_value", 5)
         self.light_group_id = kwargs.pop("light_group_id", None)
         self.pattern_id = kwargs.pop("pattern_id", 1)
+        self.pattern_option = kwargs.pop("pattern_option", 0)
 
         # this implementation does kind of require the python code to know w
         self.variant_id = 0  # for now nothing fancy, just a simple flash
@@ -26,4 +27,4 @@ class PointsSwitch:
         return self.light_group_id is not None
 
     def build_flash_message(self):
-        return build_light_message(self.light_group_id, self.pattern_id, self.variant_id)
+        return build_light_message(self.light_group_id, self.pattern_id, self.variant_id, self.pattern_option)

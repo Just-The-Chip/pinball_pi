@@ -12,10 +12,10 @@ pop_bumper2 = PointsSwitch(points_value=150, light_group_id=2)
 pop_bumper3 = PointsSwitch(points_value=150, light_group_id=3)
 
 # left static targets
-left_target1 = PointsSwitch(points_value=100)
-left_target2 = PointsSwitch(points_value=100)
-left_target3 = PointsSwitch(points_value=100)
-left_target4 = PointsSwitch(points_value=100)
+left_target1 = PointsSwitch(points_value=100, light_group_id=19, pattern_id=3, pattern_option=2)
+left_target2 = PointsSwitch(points_value=100, light_group_id=18, pattern_id=3, pattern_option=2)
+left_target3 = PointsSwitch(points_value=100, light_group_id=17, pattern_id=3, pattern_option=2)
+left_target4 = PointsSwitch(points_value=100, light_group_id=16, pattern_id=3, pattern_option=2)
 
 
 def init_pop_bumpers(game):
