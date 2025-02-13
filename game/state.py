@@ -15,7 +15,9 @@ class State:
         "mag_bridge_is_traveling": False,
         "mag_bridge_is_active": False,
         "mag_bridge_error": False,
-        "mag_bridge_switches": {}
+        "mag_bridge_switches": {},
+        "slider_progress": 0,
+        "slider_timestamp": 0
     }
 
     drop_target_groups = {
