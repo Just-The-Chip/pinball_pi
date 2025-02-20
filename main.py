@@ -5,6 +5,7 @@ from config.init.drop_targets import init_drop_targets
 from config.init.pop_bumpers import init_pop_bumpers
 from config.init.mag_bridge import init_mag_bridge
 from config.init.plinko import init_plinko
+from config.init.slider import init_slider
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS
@@ -39,6 +40,7 @@ if __name__ == '__main__':
     init_drop_targets(game)
     init_mag_bridge(game)
     init_plinko(game)
+    init_slider(game)
 
     game.start()
     game.loop()

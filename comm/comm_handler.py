@@ -4,7 +4,7 @@ class CommHandler:
     write_queue = {}
 
     def __init__(self) -> None:
-        pass
+        self.log_messages = False
 
     def register_comm(self, comm_name, comm):
         self.comms[comm_name] = comm
@@ -27,9 +27,13 @@ class CommHandler:
 
         while len(queue) > 0:
             message = queue.pop(0)
-            print(f"WRITING MESSAGE ({comm_name}):")
-            print(message)
+            self.printMsg(f"WRITING MESSAGE ({comm_name}):")
+            self.printMsg(message)
             comm.write_message(message)
 
     def queue_message(self, comm_name, message):
         self.write_queue[comm_name].append(message)
+
+    def printMsg(self, message):
+        if self.log_messages:
+            print(message)

@@ -31,6 +31,7 @@ class Game:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
         self.screen = Screen(font=font, multiplier_font=multiplier_font)
+        self.log_messages = False
         self.start()
 
     def register_message_handler(self, id, handler):
@@ -41,7 +42,7 @@ class Game:
 
     def register_state_handler(self, handler):
         self.state_handlers.append(handler)
-        print(f"state handlers: {str(len(self.state_handlers))}")
+        self.printMsg(f"state handlers: {str(len(self.state_handlers))}")
 
     def start(self):
         # send start signal to comms to enable inputs
@@ -71,11 +72,13 @@ class Game:
         messages = self.comm_handler.read_all()
         result_queue = []  # list of tuple results consisting of comm name and message
 
-        # print(f"message count: {len(messages)}")
+        # self.printMsg(f"message count: {len(messages)}")
         for id_message in messages:
             int_message = int.from_bytes(id_message, byteorder="big")
             id = (int_message >> 8)
             message = int_message & 255
+
+            print(f"MESSAGE ID: {str(id)}")
 
             handlers = self.message_handlers.get(id, [])
             for handler in handlers:
@@ -83,7 +86,7 @@ class Game:
                     handler(message, self.state))
 
             if len(handlers) == 0:
-                print(f"component id not found: {str(id)}")
+                self.printMsg(f"component id not found: {str(id)}")
 
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)
@@ -95,7 +98,7 @@ class Game:
             result_queue.extend(handler(self.state))
 
         if (len(result_queue) > 0):
-            print(f"RESULT QUEUE: {len(result_queue)}-----------------------")
+            self.printMsg(f"RESULT QUEUE: {len(result_queue)}-----------------------")
 
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)
@@ -104,3 +107,7 @@ class Game:
         self.screen.set_display_score(self.state.score)
         self.screen.set_multiplier(self.state.stacked_multiplier())
         self.screen.update()
+
+    def printMsg(self, message):
+        if self.log_messages:
+            print(message)
