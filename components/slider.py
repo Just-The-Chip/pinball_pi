@@ -13,7 +13,7 @@ class Slider:
         self.base_points = kwargs.pop("base_points_value", 0)
 
         # state key should be either a string for a root value or a tuple for nested values
-        self.slider_timeout = 2000
+        self.slider_timeout = 500
         self.light_group_id = kwargs.pop("light_group_id", None)
         self.end_pattern_id = kwargs.pop("end_pattern_id", 4)
         self.slider_pattern_id = kwargs.pop("slider_pattern_id", 5)
