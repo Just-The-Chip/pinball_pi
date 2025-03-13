@@ -20,16 +20,18 @@ class Slider:
         self.slider_variant_id = kwargs.pop("slider_variant_id", 0)
 
     def handle_message(self, message, gameState):
-        # message will be from 0 to 100 as a percetnt of slider
-        if message > 0:
+        # message will be from 0 to 100 as a percetnt of slider plus 100
+        print(f"Slider fired! Message: {str(message)}")
+        slider_percent = message - 100
+        if slider_percent > 0:
             # print(f"Slider fired! Message: {str(message)}")
 
             # this code will need to divide that by 7 to decide how many lights and points
-            progress = round(message / 100 * 7)
+            progress = round(slider_percent / 100 * 7)
             old_state = gameState.get_state("slider_progress", 0)
 
             if progress >= old_state and progress > 0:
-                # print(f"Slider progress: {str(progress)}")
+                print(f"Slider progress: {str(progress)}")
                 gameState.set_state("slider_progress", progress)
                 gameState.set_state("slider_timestamp", time() * 1000)
 
@@ -43,7 +45,7 @@ class Slider:
         now = time() * 1000
 
         if slider_timestamp > 0 and (now - slider_timestamp) >= self.slider_timeout:
-            final_progress = gameState.get_state("slider_progress", 0)\
+            final_progress = gameState.get_state("slider_progress", 0)
 
             print(f"Final progress: {str(final_progress)}")
 
@@ -56,7 +58,7 @@ class Slider:
 
     def calculate_points(self, progress):
         # this might be too disproportionate but we can change it later if necessary
-        return self.base_points * (2 ^ (progress - 1))
+        return self.base_points * (2 ** (progress - 1))
 
     def build_end_light_message(self, progress):
         if self.light_group_id is not None:
@@ -70,6 +72,6 @@ class Slider:
         if self.light_group_id is not None:
             pattern_id = self.slider_pattern_id
             variant_id = self.slider_variant_id
-            return [(COMM_LIGHTS, build_light_message(self.light_group_id, pattern_id, variant_id, progress))]
+            return [(COMM_LIGHTS, build_light_message(self.light_group_id, pattern_id, variant_id, progress - 1))]
 
         return []
