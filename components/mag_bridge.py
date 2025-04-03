@@ -29,6 +29,14 @@ class MagBridge:
 
         return []
 
+    def handle_cleanup(self, gameState):
+        # maybe later ensure mag bridge is reset?
+        print("CLEANING UP MAG BRIDGE")
+        result_queue = self.switch_group.reset_state_group(gameState)
+        result_queue.append((COMM_LIGHTS, build_light_off_message(self.ball_catch_light_group)))
+
+        return result_queue
+
     def handle_mag_bridge_message(self, message, gameState):
         result_queue = []
         if message > 0:

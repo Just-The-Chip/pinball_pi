@@ -28,3 +28,4 @@ def init_mag_bridge(game):
     game.register_message_handler(23, mag_bridge.handle_mag_bridge_message)
     game.register_state_handler(mag_bridge.handle_state)
     game.register_state_handler(mag_bridge.handle_plinko_complete)
+    game.register_cleanup_handler(mag_bridge.handle_cleanup)

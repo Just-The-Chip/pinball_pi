@@ -13,7 +13,6 @@ class Game:
     #   - decrease balls remaining
     #   - toggle a drop target flag
     #   - activate a pop bumper light
-    message_handlers = {}
 
     # state handlers check the overall state and makes additional changes to the state accordingly
     #   as well return a list of 0 to many (comm_name, message) tuples to add to the comm write queue
@@ -23,14 +22,24 @@ class Game:
     #   - enable a 2nd tier flipper
     #   - release multiball
     #   - reset drop targets
-    state_handlers = []
 
-    in_progress = False
+    # Startup handlers will return a list of any messages that need to be sent before the game starts
+    #   (e.g. ball launch) They may also modify the state if necessary but I don't see any use for that yet.
 
-    def __init__(self, comm_handler, font, multiplier_font) -> None:
+    # Cleanup handlers will return a list of messages that need to be sent after the game ends.
+    #   They may also do final modications to the state which could affect final score
+
+    def __init__(self, comm_handler, screen) -> None:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
-        self.screen = Screen(font=font, multiplier_font=multiplier_font)
+        self.screen = screen
+
+        self.in_progress = False
+        self.message_handlers = {}
+        self.state_handlers = []
+        self.startup_handlers = []
+        self.cleanup_handlers = []
+
         self.log_messages = False
         self.start()
 
@@ -44,27 +53,41 @@ class Game:
         self.state_handlers.append(handler)
         self.printMsg(f"state handlers: {str(len(self.state_handlers))}")
 
+    def register_startup_handler(self, handler):
+        self.startup_handlers.append(handler)
+        self.printMsg(f"startup handlers: {str(len(self.startup_handlers))}")
+
+    def register_cleanup_handler(self, handler):
+        self.cleanup_handlers.append(handler)
+        self.printMsg(f"cleanup handlers: {str(len(self.cleanup_handlers))}")
+
     def start(self):
         # send start signal to comms to enable inputs
         # disable start handler/enable message and state handlers?
         self.state = State()
         self.in_progress = True
+        self.screen.set_mode(1)
+
+        self.execute_handlers(self.startup_handlers)
 
     def loop(self):
         while self.in_progress:
             self.handle_incoming_messages()
-            self.handle_state()
+            self.execute_handlers(self.state_handlers)
             self.comm_handler.write_all_queued()
             self.update_screen()
             self.state.commit_changes()
 
-        self.end()
+            if self.state.balls_remaining == 0:
+                self.in_progress = False
 
     def end(self):
         # save high score
         # send end signal to comms to disable inputs, do light patterns, etc.
         # enable start handler/disable message and state handlers?
         self.in_progress = False
+        self.execute_handlers(self.cleanup_handlers)
+        self.comm_handler.write_all_queued()
 
     # 00000000  0000 0000
     # ---id---  ---msg---
@@ -91,10 +114,10 @@ class Game:
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)
 
-    def handle_state(self):
+    def execute_handlers(self, handlers):
         result_queue = []  # list of tuple results consisting of comm name and message
 
-        for handler in self.state_handlers:
+        for handler in handlers:
             result_queue.extend(handler(self.state))
 
         if (len(result_queue) > 0):

@@ -6,7 +6,7 @@ class BaseComm:
         self.port = kwargs.pop("port")
         self.baud_rate = kwargs.pop("baud_rate", 115200)
         self.message_size = kwargs.pop("message_size", 4)
-        self.log_messages = True
+        self.log_messages = False
         self.init_serial()
 
     def init_serial(self):

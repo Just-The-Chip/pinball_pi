@@ -26,6 +26,15 @@ class Screen(object):
         self.display_score = 0
         self.multiplier = 1
         self.last_canvas_update = 0
+        self.screen_mode = 0  # 0 = pregame, 1 = game, -1 = postgame
+
+        self.pregame_text_pos = self.offscreen_canvas.width
+
+    def set_mode(self, mode):
+        if mode > 1 or mode < -1:
+            self.screen_mode = 0
+        else:
+            self.screen_mode = mode
 
     def set_random_text_color(self):
         random_red = random.randrange(0, 255)
@@ -59,15 +68,40 @@ class Screen(object):
 
         self.matrix = RGBMatrix(options=options)
 
+    def pregame_update(self):
+        text = "<(^ ^<) START GAME!!! (>^ ^)>"
+
+        length = graphics.DrawText(self.offscreen_canvas, self.font,
+                                   self.pregame_text_pos, 15, self.text_color, text)
+
+        self.pregame_text_pos -= 1
+
+        if self.pregame_text_pos + length < 0:
+            self.set_random_text_color()
+            self.pregame_text_pos = self.offscreen_canvas.width
+
+    def game_update(self):
+        graphics.DrawText(self.offscreen_canvas, self.font,
+                          2, 10, self.text_color, str(self.display_score))
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 30, self.multiplier_color, f"x{str(self.multiplier)}")
+
     def update(self):
         current_time = time.time() * 1000
         if current_time >= self.last_canvas_update + 50:
             self.offscreen_canvas = self.matrix.SwapOnVSync(
                 self.offscreen_canvas)
             self.last_canvas_update = current_time
-
             self.offscreen_canvas.Clear()
-            graphics.DrawText(self.offscreen_canvas, self.font,
-                              2, 10, self.text_color, str(self.display_score))
-            graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                              2, 30, self.multiplier_color, f"x{str(self.multiplier)}")
+
+            # start prompt, high scores (later)
+            if self.screen_mode == 0:
+                self.pregame_update()
+
+            # current score
+            if self.screen_mode == 1:
+                self.game_update()
+
+            # for setting high score
+            # if self.screen_mode == -1:
+            #     self.postgame_update()

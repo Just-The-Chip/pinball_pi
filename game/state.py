@@ -2,34 +2,33 @@ import copy
 
 
 class State:
-    balls_remaining = 3
-    score = 0
-
-    multipliers = {
-        "plinko": 0
-    }
-
-    previous_state_data = {}
-
-    state_data = {
-        "mag_bridge_is_traveling": False,
-        "mag_bridge_is_active": False,
-        "mag_bridge_error": False,
-        "mag_bridge_switches": {},
-        "slider_progress": 0,
-        "slider_timestamp": 0
-    }
-
-    drop_target_groups = {
-        "test_group": {
-            1: 0,
-            2: 0,
-            3: 0
-        }
-    }
 
     def __init__(self) -> None:
-        pass
+        self.balls_remaining = 3
+        self.score = 0
+
+        self.multipliers = {
+            "plinko": 0
+        }
+
+        self.previous_state_data = {}
+
+        self.state_data = {
+            "mag_bridge_is_traveling": False,
+            "mag_bridge_is_active": False,
+            "mag_bridge_error": False,
+            "mag_bridge_switches": {},
+            "slider_progress": 0,
+            "slider_timestamp": 0
+        }
+
+        self.drop_target_groups = {
+            "test_group": {
+                1: 0,
+                2: 0,
+                3: 0
+            }
+        }
 
     def stacked_multiplier(self):
         multiplier = 1
