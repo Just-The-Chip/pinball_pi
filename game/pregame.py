@@ -5,7 +5,7 @@ class PreGame:
         self.start_button_id = start_button_id
         self.screen = screen
         self.game_in_progress = False
-        self.log_messages = True
+        self.log_messages = False
 
     def resume(self):
         self.game_in_progress = False
@@ -36,6 +36,7 @@ class PreGame:
                 self.printMsg(f"component id not found: {str(id)}")
 
     def update_screen(self):
+        self.screen.set_display_text("<(^ ^<) START GAME!!! (>^ ^)>")
         self.screen.update()
 
     def printMsg(self, message):

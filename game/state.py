@@ -1,10 +1,13 @@
 import copy
+from time import time
 
 
 class State:
 
     def __init__(self) -> None:
         self.balls_remaining = 3
+        self.balls_in_play = 0
+        self.ball_save_time = 0
         self.score = 0
 
         self.multipliers = {
@@ -40,6 +43,26 @@ class State:
     def add_points(self, points):
         self.score = self.score + points * self.stacked_multiplier()
         print(f"Points: {self.stacked_multiplier()} x {points} -> {self.score}")
+
+    def add_balls_in_play(self, balls=1):
+        self.balls_in_play += balls
+
+    def reduce_balls_in_play(self, balls=1):
+        self.balls_in_play -= balls
+
+    def add_balls_remaining(self, balls=1):
+        self.balls_remaining += balls
+
+    def reduce_balls_remaining(self, balls=1):
+        self.balls_remaining -= balls
+
+    def enable_ball_save(self, time_limit):
+        new_save_time = (time() * 1000) + time_limit
+        if (new_save_time > self.ball_save_time):
+            self.ball_save_time = new_save_time
+
+    def disable_ball_save(self):
+        self.ball_save_time = 0
 
     def set_drop_target(self, group_id, target_id, value):
         if group_id not in self.drop_target_groups:

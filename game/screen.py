@@ -25,6 +25,7 @@ class Screen(object):
         self.offscreen_canvas = self.matrix.CreateFrameCanvas()
         self.display_score = 0
         self.multiplier = 1
+        self.balls_remaining = 0
         self.last_canvas_update = 0
         self.screen_mode = 0  # 0 = pregame, 1 = game, -1 = postgame
 
@@ -35,6 +36,9 @@ class Screen(object):
             self.screen_mode = 0
         else:
             self.screen_mode = mode
+
+        if self.screen_mode == 0:
+            self.pregame_text_pos = self.offscreen_canvas.width
 
     def set_random_text_color(self):
         random_red = random.randrange(0, 255)
@@ -55,6 +59,12 @@ class Screen(object):
     def set_multiplier(self, multiplier):
         self.multiplier = multiplier
 
+    def set_balls_remaining(self, balls_remaining):
+        self.balls_remaining = balls_remaining
+
+    def set_display_text(self, text):
+        self.display_text = text
+
     def setup_matrix(self):
         options = RGBMatrixOptions()
 
@@ -68,11 +78,9 @@ class Screen(object):
 
         self.matrix = RGBMatrix(options=options)
 
-    def pregame_update(self):
-        text = "<(^ ^<) START GAME!!! (>^ ^)>"
-
+    def scroll_text_update(self):
         length = graphics.DrawText(self.offscreen_canvas, self.font,
-                                   self.pregame_text_pos, 15, self.text_color, text)
+                                   self.pregame_text_pos, 15, self.text_color, self.display_text)
 
         self.pregame_text_pos -= 1
 
@@ -83,8 +91,10 @@ class Screen(object):
     def game_update(self):
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 10, self.text_color, str(self.display_score))
+
+        bottom_text = f"x{str(self.multiplier)}  Ball: {str(self.balls_remaining)}"
         graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 30, self.multiplier_color, f"x{str(self.multiplier)}")
+                          2, 30, self.multiplier_color, bottom_text)
 
     def update(self):
         current_time = time.time() * 1000
@@ -96,7 +106,7 @@ class Screen(object):
 
             # start prompt, high scores (later)
             if self.screen_mode == 0:
-                self.pregame_update()
+                self.scroll_text_update()
 
             # current score
             if self.screen_mode == 1:
