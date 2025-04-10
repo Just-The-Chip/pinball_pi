@@ -5,8 +5,6 @@ from comm.util import build_component_message, build_light_message, build_light_
 
 
 class MagBridge:
-    targets = {}
-
     def __init__(self, **kwargs) -> None:
         self.rejector_id = kwargs.pop("rejector_id")
         self.mag_bridge_id = kwargs.pop("mag_bridge_id")

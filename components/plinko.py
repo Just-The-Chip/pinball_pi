@@ -3,8 +3,6 @@ from comm.util import build_component_message
 
 
 class Plinko:
-    targets = {}
-
     def __init__(self, **kwargs) -> None:
         self.lift_id = kwargs.pop("lift_id")
         self.switch_group = kwargs.pop("switch_group")

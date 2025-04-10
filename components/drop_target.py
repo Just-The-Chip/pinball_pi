@@ -17,9 +17,8 @@ class DropTarget:
 
 
 class DropTargetGroup:
-    targets = {}
-
     def __init__(self, **kwargs) -> None:
+        self.targets = {}
         self.group_id = kwargs.pop("group_id")
         self.build_targets(kwargs.pop("target_ids"))
 

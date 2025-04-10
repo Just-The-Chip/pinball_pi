@@ -1,9 +1,7 @@
 class CommHandler:
-
-    comms = {}
-    write_queue = {}
-
     def __init__(self) -> None:
+        self.comms = {}
+        self.write_queue = {}
         self.log_messages = True
 
     def register_comm(self, comm_name, comm):

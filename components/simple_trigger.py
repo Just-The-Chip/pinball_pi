@@ -3,8 +3,6 @@ from comm.util import build_component_message
 
 
 class SimpleTrigger:
-    targets = {}
-
     def __init__(self, **kwargs) -> None:
         self.target_id = kwargs.pop("target_id")
         self.comm_name = kwargs.pop("comm_name", COMM_SOLENOIDS)

@@ -1,7 +1,6 @@
 class PreGame:
 
     def __init__(self, start_button_id, comm_handler, screen) -> None:
-        # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
         self.start_button_id = start_button_id
         self.screen = screen
