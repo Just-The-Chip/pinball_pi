@@ -20,7 +20,7 @@ class StateSwitch:
     def handle_message(self, message, gameState):
         print(message)
         if message > 0:
-            new_state = self.set_state(gameState)
+            new_state = self.update_state(gameState)
             print(f"{str(self.state_key)} state switch fired! State: {str(new_state)}")
 
             if new_state:
@@ -30,7 +30,7 @@ class StateSwitch:
 
         return []  # once lights is hooked up we can add message to send to lights
 
-    def set_state(self, gameState):
+    def update_state(self, gameState):
         old_state = gameState.get_state(self.state_key, False)
         new_state = not old_state if self.toggle else True
         gameState.set_state(self.state_key, new_state)
@@ -45,3 +45,7 @@ class StateSwitch:
             return [(COMM_LIGHTS, build_light_message(self.light_group_id, pattern_id, variant_id))]
 
         return []
+
+    def reset_state(self, gameState):
+        gameState.set_state(self.state_key, False)
+        return self.build_light_message(gameState)

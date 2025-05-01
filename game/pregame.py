@@ -26,19 +26,20 @@ class PreGame:
             int_message = int.from_bytes(id_message, byteorder="big")
             id = (int_message >> 8)
 
-            print(f"MESSAGE ID: {str(id)}")
+            self.printMsg(f"MESSAGE ID: {str(id)}")
 
             if id == self.start_button_id:
-                print("GAME STARTED!!!!!!!!!")
+                self.printMsg("GAME STARTED!!!!!!!!!", True)
                 self.game_in_progress = True
 
             else:
-                self.printMsg(f"component id not found: {str(id)}")
+                idString = str(id)
+                self.printMsg(f"component id not found: {idString}", (len(idString) > 3))
 
     def update_screen(self):
         self.screen.set_display_text("<(^ ^<) START GAME!!! (>^ ^)>")
         self.screen.update()
 
-    def printMsg(self, message):
-        if self.log_messages:
+    def printMsg(self, message, force=False):
+        if self.log_messages or force:
             print(message)

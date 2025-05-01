@@ -70,8 +70,7 @@ class StateSwitchGroup:
 
     def reset_state_group(self, gameState):
         result_queue = []
-        for index, target in enumerate(self.targets):
-            gameState.set_state((self.state_group, index), False)
-            result_queue.extend(target.build_light_message(gameState))
+        for target in self.targets:
+            result_queue.extend(target.reset_state(gameState))
 
         return result_queue

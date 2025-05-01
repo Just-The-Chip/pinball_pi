@@ -1,11 +1,19 @@
 from components.drop_target import DropTargetGroup
 
-test_group = DropTargetGroup(group_id="test_group", target_ids=(12, 13, 14))
+multiball_drop_targets = DropTargetGroup(
+    state_group="multiball_drop_targets",
+    target_settings=(
+        {"component_id": 12, "light_group_id": None},
+        {"component_id": 13, "light_group_id": None},
+        {"component_id": 14, "light_group_id": None}
+    ),
+)
 
 
 def init_drop_targets(game):
-    test_group.register_message_handlers(game)
+    multiball_drop_targets.register_message_handlers(game)
 
-    # register some state handler to manage teeter totter owr whatevs
+    game.register_startup_handler(multiball_drop_targets.reset_state_group)
 
-    game.register_state_handler(test_group.reset_if_all_triggered)
+    # This functionality may change as we add in multiball
+    game.register_state_handler(multiball_drop_targets.reset_if_all_triggered)

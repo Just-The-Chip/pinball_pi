@@ -86,6 +86,7 @@ class Game:
         self.state = State()
         self.in_progress = True
         self.round_start_time = time() * 1000
+        self.ball_save_start_time = 0
 
         self.execute_handlers(self.startup_handlers)
 
@@ -125,7 +126,7 @@ class Game:
             self.printMsg("ROUND END ------------------------------")
             self.execute_handlers(self.round_end_handlers)
             self.state.reduce_balls_remaining()
-            self.round_start_time = (time() * 1000) + self.round_end_pause_length
+            self.round_start_time = now + self.round_end_pause_length
             self.screen.set_mode(0)
             self.screen.set_display_text(f"BALL OUT!! Lives: {self.state.balls_remaining}")
 
@@ -174,7 +175,8 @@ class Game:
                     handler(message, self.state))
 
             if len(handlers) == 0:
-                self.printMsg(f"component id not found: {str(id)}")
+                idString = str(id)
+                self.printMsg(f"component id not found: {idString}", (len(idString) > 3))
 
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)
@@ -197,6 +199,6 @@ class Game:
         self.screen.set_balls_remaining(self.state.balls_remaining)
         self.screen.update()
 
-    def printMsg(self, message):
-        if self.log_messages:
+    def printMsg(self, message, force=False):
+        if self.log_messages or force:
             print(message)

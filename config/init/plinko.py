@@ -24,3 +24,4 @@ def init_plinko(game):
 
     game.register_state_handler(plinko.handle_plinko_start)
     game.register_state_handler(plinko.update_multiplier)
+    game.register_cleanup_handler(plinko_switch_group.reset_state_group)
