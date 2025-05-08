@@ -9,7 +9,7 @@ mag_bridge_switch_group = StateSwitchGroup(
         {"component_id": 19, "light_group_id": 8},
         {"component_id": 20, "light_group_id": 9}
     ),
-    target_points=100
+    target_points=200
 )
 
 mag_bridge = MagBridge(

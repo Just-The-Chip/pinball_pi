@@ -3,7 +3,7 @@ from rgbmatrix import graphics
 from game.game import Game
 from game.pregame import PreGame
 from game.screen import Screen
-from config.init.drop_targets import init_drop_targets
+from config.init.drop_targets import init_multiball
 from config.init.pop_bumpers import init_pop_bumpers
 from config.init.mag_bridge import init_mag_bridge
 from config.init.plinko import init_plinko
@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     init_startup(game)
     init_pop_bumpers(game)
-    init_drop_targets(game)
+    init_multiball(game)
     init_mag_bridge(game)
     init_plinko(game)
     init_slider(game)
