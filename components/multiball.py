@@ -41,10 +41,11 @@ class Multiball:
             return []
 
         bank_count = self.bank_count(gameState) + 1
-        gameState.set_state(self.bank_count_key, bank_count)
 
         if bank_count > self.max_balls:
             return self.release_multiball(gameState)
+
+        gameState.set_state(self.bank_count_key, bank_count)
 
         return self.launcher.trigger_component(gameState)
 
