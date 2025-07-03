@@ -12,6 +12,7 @@ def force_end(msg, gameState):
 
 def ball_return(msg, gameState):
     gameState.reduce_balls_in_play()
+    # print(f"Balls in play: {gameState.balls_in_play}")
     return []
 
 

@@ -19,6 +19,7 @@ class Multiball:
         self.bank_ready_key = "multiball_bank_ready"
         self.bank_count_key = "multiball_bank_count"
         self.latch_trigger_time_key = "latch_trigger_time"
+        self.log_messages = False
 
     def bank_ready(self, gameState):
         return gameState.get_state(self.bank_ready_key, False)
@@ -46,6 +47,7 @@ class Multiball:
             return self.release_multiball(gameState)
 
         gameState.set_state(self.bank_count_key, bank_count)
+        self.printMsg(f"Multiball bank count: {bank_count}")
 
         return self.launcher.trigger_component(gameState)
 
@@ -53,7 +55,7 @@ class Multiball:
         trigger_time = self.latch_trigger_time(gameState)
 
         if (self.bank_ready(gameState) and trigger_time > 0 and trigger_time <= time() * 1000):
-            print("TRIGGER THE LATCH!!!!")
+            self.printMsg("TRIGGER THE LATCH!!!!")
             gameState.set_state(self.latch_trigger_time_key, 0)
             return [(COMM_SERVOS, build_component_message(self.latch_id, 1))]
 
@@ -74,16 +76,17 @@ class Multiball:
         return result_queue
 
     def release_multiball(self, gameState):
-        print("RELEASE MULTIBALL")
+        self.printMsg("RELEASE MULTIBALL")
         bank_count = self.bank_count(gameState)
         gameState.add_balls_in_play(bank_count)
+        self.printMsg(f"Balls in play RELEASE: {gameState.balls_in_play}")
 
         gameState.set_state(self.bank_count_key, 0)
         gameState.set_state(self.bank_ready_key, False)
         return [(COMM_SERVOS, build_component_message(self.latch_id, 0))]
 
     def close_door(self, gameState):
-        print("CLOSE THE DOOR!")
+        self.printMsg("CLOSE THE DOOR!")
         # set some sort of timestamp so that we can latch the door after it's closed
         gameState.set_state(self.bank_ready_key, True)
 
@@ -94,3 +97,7 @@ class Multiball:
         spool_time = round(self.spool_on_time / 100)
         spool_time = spool_time if spool_time < 10 else spool_time + 1
         return [(COMM_SOLENOIDS, build_component_message(self.spool_id, spool_time))]
+
+    def printMsg(self, message):
+        if self.log_messages:
+            print(message)

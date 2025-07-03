@@ -1,4 +1,5 @@
 from components.mag_bridge import MagBridge
+from components.mag_bridge_spinner import MagBridgeSpinner
 from components.state_switch_group import StateSwitchGroup
 
 mag_bridge_switch_group = StateSwitchGroup(
@@ -20,12 +21,19 @@ mag_bridge = MagBridge(
     mag_bridge_id=23,
 )
 
+mag_bridge_spinner = MagBridgeSpinner(spinner_id=34)
+
 
 def init_mag_bridge(game):
     mag_bridge_switch_group.register_message_handlers(game)
 
     game.register_message_handler(21, mag_bridge.handle_sensor_message)
     game.register_message_handler(23, mag_bridge.handle_mag_bridge_message)
+    game.register_message_handler(35, mag_bridge_spinner.handle_spinner_stop)
+
     game.register_state_handler(mag_bridge.handle_state)
     game.register_state_handler(mag_bridge.handle_plinko_complete)
+    game.register_state_handler(mag_bridge_spinner.handle_plinko_complete)
+
     game.register_cleanup_handler(mag_bridge.handle_cleanup)
+    game.register_cleanup_handler(mag_bridge_spinner.handle_cleanup)

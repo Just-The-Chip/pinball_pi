@@ -12,6 +12,7 @@ from config.init.startup import init_startup
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS
+from data.constants import IS_PLINKO_ACTIVE
 # import serial
 import time
 

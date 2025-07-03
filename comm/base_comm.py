@@ -28,7 +28,7 @@ class BaseComm:
             line = self.serial.readline()
 
             if len(line) > self.message_size:
-                self.printMsg(f"Line too long: {str(line)}")
+                self.printMsg(f"Line too long: {str(line)}", True)
 
             # if line doesn't end with EOL character DUMP IT IN THE TRASH!!!!
             if '\\n' in str(line):
@@ -36,7 +36,7 @@ class BaseComm:
                 lines_read += 1
                 self.printMsg(f"lines read: {lines_read}")
             else:
-                self.printMsg(f"Bad line: {str(line)}")
+                self.printMsg(f"Bad line: {str(line)}", True)
 
         return messages
 
@@ -44,6 +44,6 @@ class BaseComm:
         # this might be wrong but we haven't hooked up a component that requires it yets
         self.serial.write(message)
 
-    def printMsg(self, message):
-        if self.log_messages:
+    def printMsg(self, message, force=False):
+        if self.log_messages or force:
             print(message)

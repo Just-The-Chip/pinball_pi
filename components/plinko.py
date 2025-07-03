@@ -1,5 +1,6 @@
 from comm.constants import COMM_SOLENOIDS
 from comm.util import build_component_message
+from data.constants import IS_PLINKO_ACTIVE
 
 
 class Plinko:
@@ -12,7 +13,7 @@ class Plinko:
             game.register_message_handler(target_id, self.handle_plinko_stop)
 
     def handle_plinko_start(self, gameState):
-        is_plinko = gameState.get_state_change("plinko_active", False)
+        is_plinko = gameState.get_state_change(IS_PLINKO_ACTIVE, False)
 
         if is_plinko["from"] == False and is_plinko["to"] == True:
             return self.start_lift()
@@ -28,5 +29,5 @@ class Plinko:
         return [(COMM_SOLENOIDS, build_component_message(self.lift_id))]
 
     def handle_plinko_stop(self, message, gameState):
-        gameState.set_state("plinko_active", False)
+        gameState.set_state(IS_PLINKO_ACTIVE, False)
         return []

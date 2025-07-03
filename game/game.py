@@ -48,7 +48,7 @@ class Game:
         self.round_start_time = 0
         self.ball_save_start_time = 0
 
-        self.log_messages = True
+        self.log_messages = False
         self.round_end_pause_length = 7000
         self.ball_save_pause_time = 3500
 
@@ -176,7 +176,7 @@ class Game:
 
             if len(handlers) == 0:
                 idString = str(id)
-                self.printMsg(f"component id not found: {idString}", (len(idString) > 3))
+                self.printMsg(f"component id not found: {idString}")
 
         for comm_name, result_message in result_queue:
             self.comm_handler.queue_message(comm_name, result_message)
