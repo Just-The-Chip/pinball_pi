@@ -1,6 +1,6 @@
 from comm.constants import COMM_SERVOS, COMM_SOLENOIDS, COMM_LIGHTS
 from comm.util import build_component_message, build_light_message, build_light_error_message, build_light_off_message
-from data.constants import IS_PLINKO_ACTIVE, MAG_BRIDGE_ERROR_KEY
+from data.constants import IS_PLINKO_ACTIVE, MAG_BRIDGE_ERROR_KEY, MAG_BRIDGE_TRAVELING_KEY
 
 # at some point I will refactor out the target state stuff into its own base class
 
@@ -17,7 +17,7 @@ class MagBridge:
         self.ball_catch_variant_id = kwargs.pop("ball_catch_variant_id", 2)
 
         self.is_active_key = "mag_bridge_is_active"
-        self.is_traveling_key = "mag_bridge_is_traveling"
+        self.is_traveling_key = MAG_BRIDGE_TRAVELING_KEY
 
     def handle_state(self, gameState):
         state_val = self.switch_group.is_group_fully_triggered(gameState)

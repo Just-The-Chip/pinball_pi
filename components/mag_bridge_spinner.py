@@ -1,6 +1,6 @@
 from comm.constants import COMM_SOLENOIDS
 from comm.util import build_component_message
-from data.constants import IS_PLINKO_ACTIVE, MAG_BRIDGE_ERROR_KEY
+from data.constants import MAG_BRIDGE_TRAVELING_KEY, MAG_BRIDGE_ERROR_KEY
 
 
 class MagBridgeSpinner:
@@ -13,11 +13,11 @@ class MagBridgeSpinner:
     def stop_spinner(self):
         return [(COMM_SOLENOIDS, build_component_message(self.spinner_id, 0))]
 
-    def handle_plinko_complete(self, gameState):
-        is_plinko = gameState.get_state_change(IS_PLINKO_ACTIVE, False)
+    def handle_magbridge_complete(self, gameState):
+        bridge_is_traveling = gameState.get_state_change(MAG_BRIDGE_TRAVELING_KEY, False)
 
-        if is_plinko["from"] == True and is_plinko["to"] == False:
-            print(f"Warm up that spinner!")
+        if bridge_is_traveling["from"] == True and bridge_is_traveling["to"] == False:
+            print(f"Start that spinner!")
 
             if gameState.get_state(MAG_BRIDGE_ERROR_KEY, False):
                 print("The mag bridge has errored out. Restart to attempt to fix it.")

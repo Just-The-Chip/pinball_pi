@@ -33,7 +33,7 @@ def init_mag_bridge(game):
 
     game.register_state_handler(mag_bridge.handle_state)
     game.register_state_handler(mag_bridge.handle_plinko_complete)
-    game.register_state_handler(mag_bridge_spinner.handle_plinko_complete)
+    game.register_state_handler(mag_bridge_spinner.handle_magbridge_complete)
 
     game.register_cleanup_handler(mag_bridge.handle_cleanup)
     game.register_cleanup_handler(mag_bridge_spinner.handle_cleanup)
