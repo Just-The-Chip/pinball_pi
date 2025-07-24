@@ -1,5 +1,5 @@
 from comm.constants import COMM_LIGHTS
-from comm.util import build_light_message
+from comm.util import build_light_message, build_light_off_message
 
 
 class PointsSwitch:
@@ -28,3 +28,9 @@ class PointsSwitch:
 
     def build_flash_message(self):
         return build_light_message(self.light_group_id, self.pattern_id, self.variant_id, self.pattern_option)
+
+    def reset_lights(self, _gameState):
+        if self.has_light_group():
+            return [(COMM_LIGHTS, build_light_off_message(self.light_group_id))]
+
+        return []

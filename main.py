@@ -11,7 +11,7 @@ from config.init.slider import init_slider
 from config.init.startup import init_startup
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
-from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS
+from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
 from data.constants import IS_PLINKO_ACTIVE
 # import serial
 import time
@@ -28,6 +28,8 @@ if __name__ == '__main__':
     comm_handler = CommHandler()
     comm_handler.register_comm(
         COMM_SOLENOIDS, BaseComm(port="/dev/ttyACM_ARDUINO3", message_size=3))
+    comm_handler.register_comm(
+        COMM_SOLENOIDS2, BaseComm(port="/dev/ttyACM_ARDUINO4", message_size=3))
     comm_handler.register_comm(
         COMM_SERVOS, BaseComm(port="/dev/ttyACM_ARDUINO1", message_size=3))
     comm_handler.register_comm(

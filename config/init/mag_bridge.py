@@ -1,6 +1,7 @@
 from components.mag_bridge import MagBridge
 from components.mag_bridge_spinner import MagBridgeSpinner
 from components.state_switch_group import StateSwitchGroup
+from components.points_switch import PointsSwitch
 
 mag_bridge_switch_group = StateSwitchGroup(
     state_group="mag_bridge_switches",
@@ -23,6 +24,16 @@ mag_bridge = MagBridge(
 
 mag_bridge_spinner = MagBridgeSpinner(spinner_id=34)
 
+# spinner targets
+spinner_target1 = PointsSwitch(points_value=50)
+spinner_target2 = PointsSwitch(points_value=50)
+spinner_target3 = PointsSwitch(points_value=50)
+spinner_target4 = PointsSwitch(points_value=50)
+spinner_target5 = PointsSwitch(points_value=50)
+spinner_target6 = PointsSwitch(points_value=50)
+spinner_target7 = PointsSwitch(points_value=50)
+spinner_target8 = PointsSwitch(points_value=50)
+
 
 def init_mag_bridge(game):
     mag_bridge_switch_group.register_message_handlers(game)
@@ -37,3 +48,12 @@ def init_mag_bridge(game):
 
     game.register_cleanup_handler(mag_bridge.handle_cleanup)
     game.register_cleanup_handler(mag_bridge_spinner.handle_cleanup)
+
+    game.register_message_handler(36, spinner_target1.handle_message)
+    game.register_message_handler(37, spinner_target2.handle_message)
+    game.register_message_handler(38, spinner_target3.handle_message)
+    game.register_message_handler(39, spinner_target4.handle_message)
+    game.register_message_handler(40, spinner_target4.handle_message)
+    game.register_message_handler(41, spinner_target4.handle_message)
+    game.register_message_handler(42, spinner_target4.handle_message)
+    game.register_message_handler(43, spinner_target4.handle_message)
