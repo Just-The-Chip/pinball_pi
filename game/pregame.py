@@ -10,6 +10,7 @@ class PreGame:
     def resume(self):
         self.game_in_progress = False
         self.screen.set_mode(0)
+        self.screen.set_scroll_speed(1)
 
     def loop(self):
         while not self.game_in_progress:

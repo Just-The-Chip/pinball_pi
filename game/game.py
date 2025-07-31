@@ -49,8 +49,8 @@ class Game:
         self.ball_save_start_time = 0
 
         self.log_messages = False
-        self.round_end_pause_length = 7000
-        self.ball_save_pause_time = 3500
+        self.round_end_pause_length = 3250
+        self.ball_save_pause_time = 2000
 
     def register_launcher_callback(self, callback):
         self.launcher_callback = callback
@@ -87,6 +87,7 @@ class Game:
         self.in_progress = True
         self.round_start_time = time() * 1000
         self.ball_save_start_time = 0
+        self.screen.set_scroll_speed(2)
 
         self.execute_handlers(self.startup_handlers)
 

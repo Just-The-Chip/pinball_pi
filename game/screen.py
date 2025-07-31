@@ -28,6 +28,7 @@ class Screen(object):
         self.balls_remaining = 0
         self.last_canvas_update = 0
         self.screen_mode = 0  # 0 = pregame, 1 = game, -1 = postgame
+        self.scroll_speed = 1
 
         self.pregame_text_pos = self.offscreen_canvas.width
 
@@ -65,6 +66,9 @@ class Screen(object):
     def set_display_text(self, text):
         self.display_text = text
 
+    def set_scroll_speed(self, speed):
+        self.scroll_speed = speed
+
     def setup_matrix(self):
         options = RGBMatrixOptions()
 
@@ -82,7 +86,7 @@ class Screen(object):
         length = graphics.DrawText(self.offscreen_canvas, self.font,
                                    self.pregame_text_pos, 15, self.text_color, self.display_text)
 
-        self.pregame_text_pos -= 1
+        self.pregame_text_pos -= self.scroll_speed
 
         if self.pregame_text_pos + length < 0:
             self.set_random_text_color()
