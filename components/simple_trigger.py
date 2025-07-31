@@ -7,5 +7,5 @@ class SimpleTrigger:
         self.target_id = kwargs.pop("target_id")
         self.comm_name = kwargs.pop("comm_name", COMM_SOLENOIDS)
 
-    def trigger_component(self, gameState):
+    def trigger_component(self, _gameState):
         return [(self.comm_name, build_component_message(self.target_id))]

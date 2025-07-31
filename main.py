@@ -9,6 +9,7 @@ from config.init.mag_bridge import init_mag_bridge
 from config.init.plinko import init_plinko
 from config.init.slider import init_slider
 from config.init.startup import init_startup
+from config.init.rollovers import init_rollovers
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
@@ -46,6 +47,7 @@ if __name__ == '__main__':
     game = Game(comm_handler, screen)
 
     init_startup(game)
+    init_rollovers(game)
     init_pop_bumpers(game)
     init_multiball(game)
     init_mag_bridge(game)

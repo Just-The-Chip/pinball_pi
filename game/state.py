@@ -25,14 +25,6 @@ class State:
             "slider_timestamp": 0
         }
 
-        self.drop_target_groups = {
-            "test_group": {
-                1: 0,
-                2: 0,
-                3: 0
-            }
-        }
-
     def stacked_multiplier(self):
         multiplier = 1
         for value in self.multipliers.values():
@@ -64,14 +56,9 @@ class State:
     def disable_ball_save(self):
         self.ball_save_time = 0
 
-    def set_drop_target(self, group_id, target_id, value):
-        if group_id not in self.drop_target_groups:
-            self.drop_target_groups[group_id] = {}
-
-        self.drop_target_groups[group_id][target_id] = value
-
-    def drop_target_group(self, group_id):
-        return self.drop_target_groups.get(group_id, {})
+    def is_ball_save_active(self):
+        now = time() * 1000
+        return self.ball_save_time >= now
 
     def set_multiplier(self, multiplier_name, value):
         self.multipliers[multiplier_name] = value
