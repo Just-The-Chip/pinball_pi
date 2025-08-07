@@ -14,7 +14,7 @@ ballSaveIndicator2 = SimpleStateIndicator(
     pattern_id=6,
     variant_id=1,
     pattern_option=3,
-    indiator_key="ball_save_indicator_2",
+    indicator_key="ball_save_indicator_2",
     state_callback=lambda gameState: gameState.is_ball_save_active()
 )
 

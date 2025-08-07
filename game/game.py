@@ -40,7 +40,6 @@ class Game:
         self.message_handlers = {}
 
         self.startup_handlers = []
-        self.round_start_handlers = []
         self.state_handlers = []
         self.round_end_handlers = []
         self.cleanup_handlers = []

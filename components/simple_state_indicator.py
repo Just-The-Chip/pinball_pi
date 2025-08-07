@@ -19,7 +19,7 @@ class SimpleStateIndicator:
             return self.turn_on_indicator(gameState)
 
         if indicator_status == True and state_value == False:
-            return self.turn_off_indicator()
+            return self.turn_off_indicator(gameState)
 
         return []
 

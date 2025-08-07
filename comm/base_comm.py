@@ -41,7 +41,6 @@ class BaseComm:
         return messages
 
     def write_message(self, message):
-        # this might be wrong but we haven't hooked up a component that requires it yets
         self.serial.write(message)
 
     def printMsg(self, message, force=False):
