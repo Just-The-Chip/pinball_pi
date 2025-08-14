@@ -8,9 +8,9 @@ class PointsSwitch:
         self.light_group_id = kwargs.pop("light_group_id", None)
         self.pattern_id = kwargs.pop("pattern_id", 1)
         self.pattern_option = kwargs.pop("pattern_option", 0)
-
-        # this implementation does kind of require the python code to know w
-        self.variant_id = 0  # for now nothing fancy, just a simple flash
+        self.variant_id = kwargs.pop("variant_id", 0)
+        self.should_cycle_variants = kwargs.pop("should_cycle_variants", True)
+        self.max_variants = kwargs.pop("max_variants", 4)
 
     def handle_message(self, msg, gameState):
         gameState.add_points(self.base_points)
@@ -18,10 +18,15 @@ class PointsSwitch:
         result_messages = []
         if self.has_light_group():
             result_messages.append((COMM_LIGHTS, self.build_flash_message()))
-            # temp behavior because flash pattern ain't ready yet
-            self.variant_id = self.variant_id + 1 if self.variant_id < 3 else 0
+
+            if self.should_cycle_variants:
+                self.cycle_variants()
 
         return result_messages
+
+    def cycle_variants(self):
+        max_variant_id = self.max_variants - 1
+        self.variant_id = self.variant_id + 1 if self.variant_id < max_variant_id else 0
 
     def has_light_group(self):
         return self.light_group_id is not None
