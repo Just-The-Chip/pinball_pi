@@ -9,3 +9,6 @@ class SimpleTrigger:
 
     def trigger_component(self, _gameState):
         return [(self.comm_name, build_component_message(self.target_id))]
+
+    def untrigger_component(self, _gameState):
+        return [(self.comm_name, build_component_message(self.target_id, 0))]

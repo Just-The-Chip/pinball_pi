@@ -10,6 +10,7 @@ from config.init.plinko import init_plinko
 from config.init.slider import init_slider
 from config.init.startup import init_startup
 from config.init.rollovers import init_rollovers
+from config.init.left_launcher import init_left_launcher
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
@@ -53,6 +54,7 @@ if __name__ == '__main__':
     init_mag_bridge(game)
     init_plinko(game)
     init_slider(game)
+    init_left_launcher(game)
 
     while True:
         pregame.resume()
