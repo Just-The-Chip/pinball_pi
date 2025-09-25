@@ -36,13 +36,7 @@ class StateSwitchGroup:
             game.register_message_handler(target_id, target.handle_message)
 
     def is_group_fully_triggered(self, gameState):
-        state = gameState.get_state(self.state_group, {})
-
-        total_state = True
-        for index in range(len(self.targets)):
-            total_state = total_state and state.get(index, False)
-
-        return total_state
+        return self.triggered_count(gameState) == len(self.targets)
 
     def triggered_count(self, gameState):
         state = gameState.get_state(self.state_group, {})
@@ -54,19 +48,29 @@ class StateSwitchGroup:
 
         return num_triggered
 
-    # def shift_state_group(self, gameState, reverse=False):
-    #     current_state = gameState.get_state(self.state_group, {}).copy
-    #     result_queue = []
-    #     direction = -1 if reverse else 1
+    def shift_state_group(self, gameState, reverse=False):
+        triggered_count = self.triggered_count(gameState)
+        if triggered_count == 0 or triggered_count == len(self.targets):
+            return []
 
-    #     for index, target in enumerate(self.targets):
-    #         previous_key = index - direction
-    #         current_state = gameState.get_state((self.state_group, index), False)
-    #         gameState.set_state((self.state_group, index), previous_state)
-    #         previous_state = current_state
-    #         result_queue.extend(target.build_light_message(gameState))
+        state_list = [gameState.get_state((self.state_group, i), False) for i in range(len(self.targets))]
 
-    #     return result_queue
+        print(f"{str(self.state_group)} OLD State: {str(state_list)}")
+
+        if reverse:
+            state_list.append(state_list.pop(0))
+        else:
+            state_list.insert(0, state_list.pop(len(state_list) - 1))
+
+        result_queue = []
+
+        for index, target in enumerate(self.targets):
+            gameState.set_state((self.state_group, index), state_list[index])
+            result_queue.extend(target.build_light_message(gameState))
+
+        print(f"{str(self.state_group)} NEW State: {str(gameState.get_state(self.state_group, {}))}")
+
+        return result_queue
 
     def reset_state_group(self, gameState):
         result_queue = []
