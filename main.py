@@ -29,13 +29,13 @@ if (curpath not in sys.path):
 if __name__ == '__main__':
     comm_handler = CommHandler()
     comm_handler.register_comm(
-        COMM_SOLENOIDS, BaseComm(port="/dev/ttyACM_ARDUINO3", message_size=3))
+        COMM_SOLENOIDS, BaseComm(name=COMM_SOLENOIDS, port="/dev/ttyACM_ARDUINO3", message_size=3))
     comm_handler.register_comm(
-        COMM_SOLENOIDS2, BaseComm(port="/dev/ttyACM_ARDUINO4", message_size=3))
+        COMM_SOLENOIDS2, BaseComm(name=COMM_SOLENOIDS2, port="/dev/ttyACM_ARDUINO4", message_size=3))
     comm_handler.register_comm(
-        COMM_SERVOS, BaseComm(port="/dev/ttyACM_ARDUINO1", message_size=3))
+        COMM_SERVOS, BaseComm(name=COMM_SERVOS, port="/dev/ttyACM_ARDUINO1", message_size=3))
     comm_handler.register_comm(
-        COMM_LIGHTS, BaseComm(port="/dev/ttyACM_ARDUINO2", message_size=3))
+        COMM_LIGHTS, BaseComm(name=COMM_LIGHTS, port="/dev/ttyACM_ARDUINO2", message_size=3))
 
     font = graphics.Font()
     font.LoadFont("../rpi-rgb-led-matrix/fonts/6x10.bdf")

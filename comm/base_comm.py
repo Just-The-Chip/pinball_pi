@@ -6,6 +6,7 @@ class BaseComm:
         self.port = kwargs.pop("port")
         self.baud_rate = kwargs.pop("baud_rate", 115200)
         self.message_size = kwargs.pop("message_size", 4)
+        self.name = kwargs.pop("name", "")
         self.log_messages = False
         self.init_serial()
 
@@ -45,4 +46,4 @@ class BaseComm:
 
     def printMsg(self, message, force=False):
         if self.log_messages or force:
-            print(message)
+            print(f"{self.name} -- {message}")

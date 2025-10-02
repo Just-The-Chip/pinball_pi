@@ -72,6 +72,13 @@ class StateSwitchGroup:
 
         return result_queue
 
+    def activate_state_group(self, gameState):
+        result_queue = []
+        for target in self.targets:
+            result_queue.extend(target.activate_state(gameState))
+
+        return result_queue
+
     def reset_state_group(self, gameState):
         result_queue = []
         for target in self.targets:

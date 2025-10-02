@@ -46,6 +46,10 @@ class StateSwitch:
 
         return []
 
+    def activate_state(self, gameState):
+        gameState.set_state(self.state_key, True)
+        return self.build_light_message(gameState)
+
     def reset_state(self, gameState):
         gameState.set_state(self.state_key, False)
         return self.build_light_message(gameState)
