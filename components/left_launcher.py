@@ -47,7 +47,6 @@ class LaneSwitchHandler:
 class LeftLauncher:
     def __init__(self, **kwargs) -> None:
         self.door_state_key = kwargs.pop("door_state_key")
-        # self.left_lane_id = kwargs.pop("left_lane_id")
         self.launcher_id = kwargs.pop("launcher_id")
 
         self.launcher_pause_time = 2000
@@ -68,8 +67,9 @@ class LeftLauncher:
 
     def handle_state(self, gameState):
         pause_start = gameState.get_state(self.launcher_pause_key, 0)
+        is_launched = gameState.get_state(self.launch_key, False)
 
-        if pause_start > 0 and time() * 1000 >= pause_start + self.launcher_pause_time:
+        if not is_launched and pause_start > 0 and time() * 1000 >= pause_start + self.launcher_pause_time:
             print("FJDKSFJSKF LAUNCHE THE BAAAAALLLLLLLL")
             gameState.set_state(self.launcher_pause_key, 0)
             gameState.set_state(self.launch_key, True)
