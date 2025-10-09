@@ -1,6 +1,7 @@
 from comm.constants import COMM_SERVOS
 from comm.util import build_component_message
 from components.simple_trigger import SimpleTrigger
+from components.util import HandlerResponse
 
 
 class StateTrigger(SimpleTrigger):
@@ -16,4 +17,4 @@ class StateTrigger(SimpleTrigger):
         elif diff["to"] == False and diff["from"] == True:
             return self.untrigger_component(gameState)
 
-        return []
+        return HandlerResponse()

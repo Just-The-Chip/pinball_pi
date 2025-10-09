@@ -1,6 +1,7 @@
 # from math import round
 from comm.constants import COMM_LIGHTS
 from comm.util import build_light_message
+from components.util import HandlerResponse
 from time import time
 
 
@@ -10,14 +11,14 @@ from time import time
 # 125 start val?
 class Slider:
     def __init__(self, **kwargs) -> None:
-        self.base_points = kwargs.pop("base_points_value", 0)
+        self.base_points: int = kwargs.pop("base_points_value", 0)
 
         # state key should be either a string for a root value or a tuple for nested values
         self.slider_timeout = 600
-        self.light_group_id = kwargs.pop("light_group_id", None)
-        self.end_pattern_id = kwargs.pop("end_pattern_id", 4)
-        self.slider_pattern_id = kwargs.pop("slider_pattern_id", 5)
-        self.slider_variant_id = kwargs.pop("slider_variant_id", 0)
+        self.light_group_id: int | None = kwargs.pop("light_group_id", None)
+        self.end_pattern_id: int = kwargs.pop("end_pattern_id", 4)
+        self.slider_pattern_id: int = kwargs.pop("slider_pattern_id", 5)
+        self.slider_variant_id: int = kwargs.pop("slider_variant_id", 0)
         self.log_messages = False
 
     def handle_message(self, message, gameState):
@@ -37,8 +38,8 @@ class Slider:
                 gameState.set_state("slider_timestamp", time() * 1000)
 
                 if progress > old_state:
-                    return self.build_light_message(progress)
-        return []
+                    return HandlerResponse(messages=self.build_light_message(progress))
+        return HandlerResponse()
 
     def handle_state(self, gameState):
 
@@ -54,8 +55,8 @@ class Slider:
             gameState.set_state("slider_timestamp", 0)
             gameState.add_points(self.calculate_points(final_progress))
 
-            return self.build_end_light_message(final_progress)
-        return []
+            return HandlerResponse(messages=self.build_end_light_message(final_progress))
+        return HandlerResponse()
 
     def calculate_points(self, progress):
         # this might be too disproportionate but we can change it later if necessary

@@ -1,5 +1,6 @@
 from comm.constants import COMM_SOLENOIDS
 from comm.util import build_component_message
+from components.util import HandlerResponse
 from data.constants import MAG_BRIDGE_TRAVELING_KEY, MAG_BRIDGE_ERROR_KEY
 
 
@@ -8,10 +9,10 @@ class MagBridgeSpinner:
         self.spinner_id = kwargs.pop("spinner_id")
 
     def start_spinner(self):
-        return [(COMM_SOLENOIDS, build_component_message(self.spinner_id, 1))]
+        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.spinner_id, 1))])
 
     def stop_spinner(self):
-        return [(COMM_SOLENOIDS, build_component_message(self.spinner_id, 0))]
+        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.spinner_id, 0))])
 
     def handle_magbridge_complete(self, gameState):
         bridge_is_traveling = gameState.get_state_change(MAG_BRIDGE_TRAVELING_KEY, False)
@@ -24,7 +25,7 @@ class MagBridgeSpinner:
             else:
                 return self.start_spinner()
 
-        return []
+        return HandlerResponse()
 
     def handle_spinner_stop(self, _message, _gameState):
         return self.stop_spinner()

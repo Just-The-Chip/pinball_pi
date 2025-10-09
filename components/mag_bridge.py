@@ -1,5 +1,7 @@
 from comm.constants import COMM_SERVOS, COMM_SOLENOIDS, COMM_LIGHTS
 from comm.util import build_component_message, build_light_message, build_light_error_message, build_light_off_message
+from components.state_switch_group import StateSwitchGroup
+from components.util import HandlerResponse
 from data.constants import IS_PLINKO_ACTIVE, MAG_BRIDGE_ERROR_KEY, MAG_BRIDGE_TRAVELING_KEY
 
 # at some point I will refactor out the target state stuff into its own base class
@@ -7,14 +9,13 @@ from data.constants import IS_PLINKO_ACTIVE, MAG_BRIDGE_ERROR_KEY, MAG_BRIDGE_TR
 
 class MagBridge:
     def __init__(self, **kwargs) -> None:
-        self.rejector_id = kwargs.pop("rejector_id")
-        self.mag_bridge_id = kwargs.pop("mag_bridge_id")
-        self.switch_group = kwargs.pop("switch_group")
-        # self.state_group = kwargs.pop("state_group")
+        self.rejector_id: int = kwargs.pop("rejector_id")
+        self.mag_bridge_id: int = kwargs.pop("mag_bridge_id")
+        self.switch_group: StateSwitchGroup = kwargs.pop("switch_group")
 
-        self.ball_catch_light_group = kwargs.pop("ball_catch_light_group", None)
-        self.ball_catch_pattern_id = kwargs.pop("ball_catch_pattern_id", 2)
-        self.ball_catch_variant_id = kwargs.pop("ball_catch_variant_id", 2)
+        self.ball_catch_light_group: int | None = kwargs.pop("ball_catch_light_group", None)
+        self.ball_catch_pattern_id: int = kwargs.pop("ball_catch_pattern_id", 2)
+        self.ball_catch_variant_id: int = kwargs.pop("ball_catch_variant_id", 2)
 
         self.is_active_key = "mag_bridge_is_active"
         self.is_traveling_key = MAG_BRIDGE_TRAVELING_KEY
@@ -29,18 +30,18 @@ class MagBridge:
 
             return self.build_light_message(gameState)
 
-        return []
+        return HandlerResponse()
 
     def handle_cleanup(self, gameState):
         # maybe later ensure mag bridge is reset?
         print("CLEANING UP MAG BRIDGE")
         result_queue = self.switch_group.reset_state_group(gameState)
-        result_queue.append((COMM_LIGHTS, build_light_off_message(self.ball_catch_light_group)))
+        result_queue.append_message((COMM_LIGHTS, build_light_off_message(self.ball_catch_light_group)))
 
         return result_queue
 
     def handle_mag_bridge_message(self, message, gameState):
-        result_queue = []
+        result_queue = HandlerResponse()
         if message > 0:
             result_queue = self.switch_group.reset_state_group(gameState)
             gameState.set_state(self.is_traveling_key, False)
@@ -69,7 +70,7 @@ class MagBridge:
             else:
                 print("the mag bridge is not reADY YETTTTT!!!!!")
 
-        return []  # once lights is hooked up we can add message to send to lights
+        return HandlerResponse()  # once lights is hooked up we can add message to send to lights
 
     def handle_plinko_complete(self, gameState):
         is_plinko = gameState.get_state_change(IS_PLINKO_ACTIVE, False)
@@ -82,18 +83,18 @@ class MagBridge:
             else:
                 return self.trigger_bridge(gameState)
 
-        return []
+        return HandlerResponse()
 
     def reject_ball(self, gameState):
-        return [(COMM_SOLENOIDS, build_component_message(self.rejector_id))]
+        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.rejector_id))])
 
     def trigger_bridge(self, gameState):
         gameState.set_state(self.is_traveling_key, True)
-        return [(COMM_SERVOS, build_component_message(self.mag_bridge_id))]
+        return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.mag_bridge_id))])
 
     def build_light_message(self, gameState):
         if self.ball_catch_light_group is None:
-            return []
+            return HandlerResponse()
 
         light_message = build_light_off_message(self.ball_catch_light_group)
 
@@ -105,4 +106,4 @@ class MagBridge:
             variant_id = self.ball_catch_variant_id
             light_message = build_light_message(self.ball_catch_light_group, pattern_id, variant_id)
 
-        return [(COMM_LIGHTS, light_message)]
+        return HandlerResponse(messages=[(COMM_LIGHTS, light_message)])

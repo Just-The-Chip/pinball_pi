@@ -1,4 +1,5 @@
 from components.simple_trigger import SimpleTrigger
+from components.util import HandlerResponse
 
 launcher = SimpleTrigger(target_id=32)
 
@@ -7,13 +8,13 @@ def force_end(msg, gameState):
     gameState.balls_remaining = 0
     gameState.disable_ball_save()
 
-    return []
+    return HandlerResponse()
 
 
 def ball_return(msg, gameState):
     gameState.reduce_balls_in_play()
     # print(f"Balls in play: {gameState.balls_in_play}")
-    return []
+    return HandlerResponse()
 
 
 def init_startup(game):

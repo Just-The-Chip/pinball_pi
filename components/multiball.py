@@ -1,17 +1,20 @@
 from comm.constants import COMM_SOLENOIDS, COMM_SERVOS
 from comm.util import build_component_message
+from components.simple_trigger import SimpleTrigger
+from components.drop_target import DropTargetGroup
+from components.util import HandlerResponse
 from time import time
 
 
 class Multiball:
     def __init__(self, **kwargs) -> None:
-        self.spool_id = kwargs.pop("spool_id")
-        self.latch_id = kwargs.pop("latch_id")
-        self.entry_rollover_id = kwargs.pop("entry_rollover_id")
-        self.drop_target_group = kwargs.pop("drop_target_group")
-        self.launcher = kwargs.pop("launcher")
-        self.min_balls = kwargs.pop("min_balls", 1)
-        self.max_balls = kwargs.pop("max_balls", 3)
+        self.spool_id: int = kwargs.pop("spool_id")
+        self.latch_id: int = kwargs.pop("latch_id")
+        self.entry_rollover_id: int = kwargs.pop("entry_rollover_id")
+        self.drop_target_group: DropTargetGroup = kwargs.pop("drop_target_group")
+        self.launcher: SimpleTrigger = kwargs.pop("launcher")
+        self.min_balls: int = kwargs.pop("min_balls", 1)
+        self.max_balls: int = kwargs.pop("max_balls", 3)
 
         self.spool_on_time = 1000
         self.latch_trigger_delay = 500
@@ -46,7 +49,7 @@ class Multiball:
     def handle_ball_entry(self, msg, gameState):
         # may need special handling for if door is the process of closing
         if not self.bank_ready(gameState):
-            return []
+            return HandlerResponse()
 
         bank_count = self.bank_count(gameState) + 1
 
@@ -59,7 +62,7 @@ class Multiball:
         if gameState.balls_in_play > 1:
             self.printMsg(f"Balls in play: {gameState.balls_in_play}")
             gameState.reduce_balls_in_play()
-            return []
+            return HandlerResponse()
 
         return self.launcher.trigger_component(gameState)
 
@@ -69,9 +72,9 @@ class Multiball:
         if (self.bank_ready(gameState) and trigger_time > 0 and trigger_time <= time() * 1000):
             self.printMsg("TRIGGER THE LATCH!!!!")
             gameState.set_state(self.latch_trigger_time_key, 0)
-            return [(COMM_SERVOS, build_component_message(self.latch_id, 1))]
+            return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.latch_id, 1))])
 
-        return []
+        return HandlerResponse()
 
     def handle_door_reclose(self, gameState):
         trigger_time = self.reclose_time(gameState)
@@ -81,12 +84,12 @@ class Multiball:
             gameState.set_state(self.reclose_time_key, 0)
             return self.close_door(gameState)
 
-        return []
+        return HandlerResponse()
 
     def handle_state(self, gameState):
         dropTargetsActivated = self.drop_target_group.is_group_fully_triggered(gameState)
         if not dropTargetsActivated or gameState.balls_in_play > 1:
-            return []
+            return HandlerResponse()
 
         result_queue = self.drop_target_group.reset_state_group(gameState)
 
@@ -116,7 +119,7 @@ class Multiball:
         reclose_time = (time() * 1000) + self.reclose_delay
         gameState.set_state(self.reclose_time_key, reclose_time)
 
-        return [(COMM_SERVOS, build_component_message(self.latch_id, 0))]
+        return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.latch_id, 0))])
 
     def close_door(self, gameState):
         self.printMsg("CLOSE THE DOOR!")
@@ -129,7 +132,7 @@ class Multiball:
         # 10ths of a second
         spool_time = round(self.spool_on_time / 100)
         spool_time = spool_time if spool_time < 10 else spool_time + 1
-        return [(COMM_SOLENOIDS, build_component_message(self.spool_id, spool_time))]
+        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.spool_id, spool_time))])
 
     def printMsg(self, message):
         if self.log_messages:

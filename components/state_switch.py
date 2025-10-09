@@ -2,20 +2,21 @@
 # from comm.util import build_component_message
 from comm.constants import COMM_LIGHTS
 from comm.util import build_light_message
+from components.util import HandlerResponse
 
 
 class StateSwitch:
     def __init__(self, **kwargs) -> None:
         # self.id = kwargs.pop("id")
         # self.group_id = kwargs.pop("group_id")
-        self.toggle = kwargs.pop("toggle", False)
-        self.base_points = kwargs.pop("points_value", 0)
+        self.toggle: bool = kwargs.pop("toggle", False)
+        self.base_points: int = kwargs.pop("points_value", 0)
 
         # state key should be either a string for a root value or a tuple for nested values
         self.state_key = kwargs.pop("state_key")
-        self.light_group_id = kwargs.pop("light_group_id", None)
-        self.pattern_id = kwargs.pop("pattern_id", 2)
-        self.variant_id = kwargs.pop("variant_id", 3)
+        self.light_group_id: int | None = kwargs.pop("light_group_id", None)
+        self.pattern_id: int = kwargs.pop("pattern_id", 2)
+        self.variant_id: int = kwargs.pop("variant_id", 3)
 
     def handle_message(self, message, gameState):
         print(message)
@@ -28,7 +29,7 @@ class StateSwitch:
 
             return self.build_light_message(gameState)
 
-        return []  # once lights is hooked up we can add message to send to lights
+        return HandlerResponse()
 
     def update_state(self, gameState):
         old_state = gameState.get_state(self.state_key, False)
@@ -42,9 +43,11 @@ class StateSwitch:
             current_state = gameState.get_state(self.state_key, False)
             pattern_id = self.pattern_id if current_state else 0
             variant_id = self.variant_id if current_state else 0
-            return [(COMM_LIGHTS, build_light_message(self.light_group_id, pattern_id, variant_id))]
+            return HandlerResponse(
+                messages=[(COMM_LIGHTS, build_light_message(self.light_group_id, pattern_id, variant_id))]
+            )
 
-        return []
+        return HandlerResponse()
 
     def activate_state(self, gameState):
         gameState.set_state(self.state_key, True)

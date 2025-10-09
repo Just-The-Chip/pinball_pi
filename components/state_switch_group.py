@@ -1,4 +1,5 @@
 from components.state_switch import StateSwitch
+from components.util import HandlerResponse
 
 
 class StateSwitchGroup:
@@ -6,14 +7,14 @@ class StateSwitchGroup:
     def __init__(self, **kwargs) -> None:
         self.state_group = kwargs.pop("state_group")
 
-        target_settings = kwargs.pop("target_settings")
-        self.target_ids = [target.get("component_id") for target in target_settings]
+        target_settings: list[dict] = kwargs.pop("target_settings")
+        self.target_ids: list[int] = [target.get("component_id") for target in target_settings]
 
-        target_points = kwargs.pop("target_points", 0)
-        self.targets = []
+        target_points: int = kwargs.pop("target_points", 0)
+        self.targets: list[StateSwitch] = []
         self.build_targets(target_settings, target_points)
 
-    def build_targets(self, target_settings, target_points):
+    def build_targets(self, target_settings: list[dict], target_points: int):
         for index, target in enumerate(target_settings):
             light_group_id = target.get("light_group_id")
             pattern_id = target.get("pattern_id", 2)
@@ -49,9 +50,11 @@ class StateSwitchGroup:
         return num_triggered
 
     def shift_state_group(self, gameState, reverse=False):
+        result_queue = HandlerResponse()
+
         triggered_count = self.triggered_count(gameState)
         if triggered_count == 0 or triggered_count == len(self.targets):
-            return []
+            return result_queue
 
         state_list = [gameState.get_state((self.state_group, i), False) for i in range(len(self.targets))]
 
@@ -62,8 +65,6 @@ class StateSwitchGroup:
         else:
             state_list.insert(0, state_list.pop(len(state_list) - 1))
 
-        result_queue = []
-
         for index, target in enumerate(self.targets):
             gameState.set_state((self.state_group, index), state_list[index])
             result_queue.extend(target.build_light_message(gameState))
@@ -73,14 +74,14 @@ class StateSwitchGroup:
         return result_queue
 
     def activate_state_group(self, gameState):
-        result_queue = []
+        result_queue = HandlerResponse()
         for target in self.targets:
             result_queue.extend(target.activate_state(gameState))
 
         return result_queue
 
     def reset_state_group(self, gameState):
-        result_queue = []
+        result_queue = HandlerResponse()
         for target in self.targets:
             result_queue.extend(target.reset_state(gameState))
 

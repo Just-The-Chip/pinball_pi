@@ -1,6 +1,7 @@
 from game.state import State
 from game.screen import Screen
 from comm.comm_handler import CommHandler
+from components.util import HandlerResponse
 from time import time
 
 
@@ -159,7 +160,7 @@ class Game:
     # ---id---  ---msg---
     def handle_incoming_messages(self):
         messages = self.comm_handler.read_all()
-        result_queue = []  # list of tuple results consisting of comm name and message
+        response_queue = HandlerResponse()  # list of tuple results consisting of comm name and message
 
         # self.printMsg(f"message count: {len(messages)}")
         for id_message in messages:
@@ -171,26 +172,26 @@ class Game:
 
             handlers = self.message_handlers.get(id, [])
             for handler in handlers:
-                result_queue.extend(
+                response_queue.extend(
                     handler(message, self.state))
 
             if len(handlers) == 0:
                 idString = str(id)
                 self.printMsg(f"component id not found: {idString}")
 
-        for comm_name, result_message in result_queue:
+        for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
 
     def execute_handlers(self, handlers):
-        result_queue = []  # list of tuple results consisting of comm name and message
+        response_queue = HandlerResponse()  # list of tuple results consisting of comm name and message
 
         for handler in handlers:
-            result_queue.extend(handler(self.state))
+            response_queue.extend(handler(self.state))
 
-        if (len(result_queue) > 0):
-            self.printMsg(f"RESULT QUEUE: {len(result_queue)}-----------------------")
+        if (len(response_queue.messages) > 0):
+            self.printMsg(f"MESSAGE QUEUE: {len(response_queue.messages)}-----------------------")
 
-        for comm_name, result_message in result_queue:
+        for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
 
     def update_screen(self):
