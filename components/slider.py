@@ -28,8 +28,12 @@ class Slider:
         if slider_percent > 0:
             # self.printMsg(f"Slider fired! Message: {str(message)}")
 
-            # this code will need to divide that by 7 to decide how many lights and points
-            progress = round(slider_percent / 100 * 7)
+            # this code will need to divide that by 6 to decide how many lights and points
+            progress = round(slider_percent / 100 * 6)
+            # there are 7 lights but only 6 segments so whatever, 6 = 7 now.
+            if progress == 6:
+                progress = 7
+
             old_state = gameState.get_state("slider_progress", 0)
 
             if progress >= old_state and progress > 0:
