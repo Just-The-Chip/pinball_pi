@@ -3,6 +3,16 @@ from game.screen import Screen
 from comm.comm_handler import CommHandler
 from components.util import HandlerResponse
 from time import time
+from pathlib import Path
+import sys
+import os
+
+curpath = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, 'sound'))
+print(curpath)
+if (curpath not in sys.path):
+    sys.path.append(curpath)
+
+from player import Player
 
 
 class Game:
@@ -51,6 +61,8 @@ class Game:
         self.log_messages = False
         self.round_end_pause_length = 3250
         self.ball_save_pause_time = 2000
+
+        self.player = Player()
 
     def register_launcher_callback(self, callback):
         self.launcher_callback = callback
@@ -193,6 +205,9 @@ class Game:
 
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
+        
+        for sound in response_queue.sounds:
+            self.player.play(sound)
 
     def update_screen(self):
         self.screen.set_display_score(self.state.score)

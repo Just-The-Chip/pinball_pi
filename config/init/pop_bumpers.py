@@ -5,11 +5,11 @@ leftSling = PointsSwitch(points_value=50, light_group_id=4)
 rightSling = PointsSwitch(points_value=50, light_group_id=5)
 
 # top bumper
-pop_bumper1 = PointsSwitch(points_value=500, light_group_id=1, pattern_id=2)
+pop_bumper1 = PointsSwitch(points_value=500, light_group_id=1, pattern_id=2, sound="pop_bumper")
 
 # side bumpers
-pop_bumper2 = PointsSwitch(points_value=150, light_group_id=2)
-pop_bumper3 = PointsSwitch(points_value=150, light_group_id=3)
+pop_bumper2 = PointsSwitch(points_value=150, light_group_id=2, sound="pop_bumper")
+pop_bumper3 = PointsSwitch(points_value=150, light_group_id=3, sound="pop_bumper")
 
 # left static targets
 left_target1 = PointsSwitch(points_value=100, light_group_id=19, pattern_id=3, pattern_option=2)

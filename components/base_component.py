@@ -3,7 +3,7 @@ from components.util import HandlerResponse
 
 class BaseComponent:
     def __init__(self, **kwargs) -> None:
-        pass
+        self.sound: str = kwargs.pop("sound") # string representing the sound or sound group of the component
 
     def handle_message(self, msg, gameState):
         # decode recieved message

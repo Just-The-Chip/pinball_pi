@@ -11,6 +11,7 @@ class Player:
     # load all the sounds into some object so they can be called by name
     def loadsounds(self):
         self.sound_lib["points_button"] = Sound(self.sound_dir / 'component sounds/points buttons', PLAY_RANDOM)
+        self.sound_lib["pop_bumper"] = Sound(self.sound_dir / 'component sounds/Poppers', PLAY_RANDOM)
 
     # game calls this to play a sound
     def play(self, alias: str):
