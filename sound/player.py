@@ -15,7 +15,7 @@ class Player:
 
     # game calls this to play a sound
     def play(self, alias: str):
-        # print(self.sound_lib)
+        print("PLAY PLAY PLAY")
         self.sound_lib[alias].play()
     
     # game call this to stop a sound that is playing

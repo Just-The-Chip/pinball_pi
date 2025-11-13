@@ -15,6 +15,7 @@ from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
 from data.constants import IS_PLINKO_ACTIVE
+from player import Player
 # import serial
 import time
 
@@ -24,6 +25,7 @@ import os
 curpath = os.path.abspath(os.path.join(__file__, os.pardir))
 if (curpath not in sys.path):
     sys.path.append(curpath)
+
 
 
 if __name__ == '__main__':
@@ -36,6 +38,7 @@ if __name__ == '__main__':
         COMM_SERVOS, BaseComm(name=COMM_SERVOS, port="/dev/ttyACM_ARDUINO1", message_size=3))
     comm_handler.register_comm(
         COMM_LIGHTS, BaseComm(name=COMM_LIGHTS, port="/dev/ttyACM_ARDUINO2", message_size=3))
+    player = Player()
 
     font = graphics.Font()
     font.LoadFont("../rpi-rgb-led-matrix/fonts/6x10.bdf")
@@ -45,7 +48,7 @@ if __name__ == '__main__':
     screen = Screen(font=font, multiplier_font=multiplier_font)
 
     pregame = PreGame(2, comm_handler, screen)
-    game = Game(comm_handler, screen)
+    game = Game(comm_handler, screen, player)
 
     init_startup(game)
     init_rollovers(game)

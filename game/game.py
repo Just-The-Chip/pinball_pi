@@ -8,7 +8,6 @@ import sys
 import os
 
 curpath = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, 'sound'))
-print(curpath)
 if (curpath not in sys.path):
     sys.path.append(curpath)
 
@@ -41,7 +40,7 @@ class Game:
     # Cleanup handlers will return a list of messages that need to be sent after the game ends.
     #   They may also do final modications to the state which could affect final score
 
-    def __init__(self, comm_handler, screen) -> None:
+    def __init__(self, comm_handler, screen, Player) -> None:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
         self.screen = screen
@@ -62,7 +61,7 @@ class Game:
         self.round_end_pause_length = 3250
         self.ball_save_pause_time = 2000
 
-        self.player = Player()
+        self.player = Player
 
     def register_launcher_callback(self, callback):
         self.launcher_callback = callback
@@ -194,6 +193,10 @@ class Game:
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
 
+        for sound in response_queue.sounds:
+            print(sound)
+            self.player.play(sound)
+
     def execute_handlers(self, handlers):
         response_queue = HandlerResponse()  # list of tuple results consisting of comm name and message
 
@@ -206,7 +209,9 @@ class Game:
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
         
+
         for sound in response_queue.sounds:
+            print(sound)
             self.player.play(sound)
 
     def update_screen(self):
