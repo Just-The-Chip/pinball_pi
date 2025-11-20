@@ -25,7 +25,7 @@ class PointsSwitch:
                 self.cycle_variants()
 
         if self.sound == None:
-            sounds_array = None
+            sounds_array = []
         else:
             sounds_array = [self.sound]
 

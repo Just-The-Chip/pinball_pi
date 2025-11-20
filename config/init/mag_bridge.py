@@ -25,14 +25,14 @@ mag_bridge = MagBridge(
 mag_bridge_spinner = MagBridgeSpinner(spinner_id=34)
 
 # spinner targets
-spinner_target1 = PointsSwitch(points_value=50)
-spinner_target2 = PointsSwitch(points_value=50)
-spinner_target3 = PointsSwitch(points_value=50)
-spinner_target4 = PointsSwitch(points_value=50)
-spinner_target5 = PointsSwitch(points_value=50)
-spinner_target6 = PointsSwitch(points_value=50)
-spinner_target7 = PointsSwitch(points_value=50)
-spinner_target8 = PointsSwitch(points_value=50)
+spinner_target1 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target2 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target3 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target4 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target5 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target6 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target7 = PointsSwitch(points_value=50, sound="spinner_points")
+spinner_target8 = PointsSwitch(points_value=50, sound="spinner_points")
 
 
 def init_mag_bridge(game):

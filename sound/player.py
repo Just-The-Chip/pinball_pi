@@ -12,10 +12,11 @@ class Player:
     def loadsounds(self):
         self.sound_lib["points_button"] = Sound(self.sound_dir / 'component sounds/points buttons', PLAY_RANDOM)
         self.sound_lib["pop_bumper"] = Sound(self.sound_dir / 'component sounds/Poppers', PLAY_RANDOM)
+        self.sound_lib["spinner_points"] = Sound(self.sound_dir / 'component sounds/Spinner buttons', PLAY_RANDOM)
+        self.sound_lib["mario_tube"] = Sound(self.sound_dir / 'component sounds/mario tube', PLAY_RANDOM)
 
     # game calls this to play a sound
     def play(self, alias: str):
-        print("PLAY PLAY PLAY")
         self.sound_lib[alias].play()
     
     # game call this to stop a sound that is playing
