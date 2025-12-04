@@ -21,8 +21,8 @@ class ScoreRepository:
     def score_position(self, score: int) -> int:
         for index, record in enumerate(self.scores):
             if score > record["score"]:
-                return index + 1
-        return len(self.scores) + 1
+                return index
+        return len(self.scores)
 
     def add_score(self, player: str, score: int) -> None:
         self.scores.append({
