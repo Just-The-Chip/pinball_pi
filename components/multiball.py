@@ -26,6 +26,8 @@ class Multiball:
         self.reclose_time_key = "reclose_time"
         self.log_messages = True
 
+        self.sound: str = kwargs.pop("sound", None) # string representing the sound or sound group of the component
+
     def bank_ready(self, gameState):
         return gameState.get_state(self.bank_ready_key, False)
 
@@ -119,7 +121,12 @@ class Multiball:
         reclose_time = (time() * 1000) + self.reclose_delay
         gameState.set_state(self.reclose_time_key, reclose_time)
 
-        return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.latch_id, 0))])
+        if self.sound == None:
+            sounds_array = []
+        else:
+            sounds_array = [self.sound]
+
+        return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.latch_id, 0))], sounds=sounds_array)
 
     def close_door(self, gameState):
         self.printMsg("CLOSE THE DOOR!")
