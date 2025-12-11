@@ -2,7 +2,9 @@
 from rgbmatrix import graphics
 from game.game import Game
 from game.pregame import PreGame
+from game.postgame import PostGame
 from game.screen import Screen
+from game.score_repository import ScoreRepository
 from config.init.drop_targets import init_multiball
 from config.init.pop_bumpers import init_pop_bumpers
 from config.init.mag_bridge import init_mag_bridge
@@ -14,12 +16,15 @@ from config.init.left_launcher import init_left_launcher
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
-from data.constants import IS_PLINKO_ACTIVE
 # import serial
 import time
 
 import sys
 import os
+
+START_BUTTON_ID = 2
+LEFT_FLIPPER_ID = 52
+RIGHT_FLIPPER_ID = 53
 
 curpath = os.path.abspath(os.path.join(__file__, os.pardir))
 if (curpath not in sys.path):
@@ -44,8 +49,23 @@ if __name__ == '__main__':
 
     screen = Screen(font=font, multiplier_font=multiplier_font)
 
-    pregame = PreGame(2, comm_handler, screen)
+    score_path = f"{os.path.dirname(__file__)}/../.pinball/scores.csv"
+    if not os.path.exists(os.path.dirname(score_path)):
+        raise FileNotFoundError(f"Score directorey does not exist. Please create {os.path.dirname(score_path)}")
+
+    score_repository = ScoreRepository(path=score_path)
+    score_repository.load()
+
+    pregame = PreGame(START_BUTTON_ID, comm_handler, screen)
     game = Game(comm_handler, screen)
+    postgame = PostGame(
+        comm_handler=comm_handler,
+        screen=screen,
+        score_repository=score_repository,
+        left_flipper_id=LEFT_FLIPPER_ID,
+        right_flipper_id=RIGHT_FLIPPER_ID,
+        start_button_id=START_BUTTON_ID,
+    )
 
     init_startup(game)
     init_rollovers(game)
@@ -63,5 +83,10 @@ if __name__ == '__main__':
         game.start()
         game.loop()
         game.end()
+
+        postgame.start(game.state)
+        postgame.loop()
+
+        print(score_repository.top_scores())
 
         # later a post game object will take the state from the game and save high scores.

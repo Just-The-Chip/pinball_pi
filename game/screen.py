@@ -31,8 +31,8 @@ class Screen(object):
         self.screen_mode = 0  # 0 = pregame, 1 = game, -1 = postgame
         self.scroll_speed = 1
 
-        self.blink_interval_ms = 500
-        self.input_start = 0
+        self.blink_interval_ms = 350
+        # self.input_start = 0
         self.current_name = []
         self.name_position_index = 0
 
@@ -47,7 +47,7 @@ class Screen(object):
         if self.screen_mode == 0:
             self.pregame_text_pos = self.offscreen_canvas.width
         elif self.screen_mode == -1:
-            self.input_start = time.time() * 1000
+            # self.input_start = time.time() * 1000
             self.current_name = ["_"] * 3
             self.name_position_index = 0
 
@@ -115,17 +115,20 @@ class Screen(object):
                           2, 30, self.multiplier_color, bottom_text)
 
     def name_input_update(self):
-        is_cursor_visible = math.floor(self.input_start / self.blink_interval_ms) % 2 == 0
+        is_cursor_visible = math.floor(time.time() * 1000 / self.blink_interval_ms) % 2 == 0
 
         display_name = ""
         for index, letter in enumerate(self.current_name):
             if is_cursor_visible and index == self.name_position_index:
-                display_name += "_"
+                display_name += "_" if letter != "_" else " "
             else:
                 display_name += letter
 
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 10, self.text_color, f"Enter Name:")
+
         graphics.DrawText(self.offscreen_canvas, self.font,
-                          10, 20, self.text_color, f"Enter Name: {display_name}")
+                          2, 25, self.text_color, display_name)
 
     def update(self):
         current_time = time.time() * 1000

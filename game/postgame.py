@@ -1,4 +1,4 @@
-from datetime import time
+from time import time
 import random
 
 from game.score_repository import ScoreRepository
@@ -17,8 +17,9 @@ RIGHT_FLIPPER = "right_flipper"
 START_BUTTON = "start_button"
 
 GAME_OVER_DISPLAY_TIME_MS = 5000
-SCORE_CHECK_DISPLAY_TIME_MS = 5000
-EASTER_EGG_DISPLAY_TIME_MS = 5000
+SCORE_CHECK_DISPLAY_TIME_MS = 7500
+HIGH_SCORE_DISPLAY_TIME_MS = 5000
+EASTER_EGG_DISPLAY_TIME_MS = 9000
 
 
 class PostGame:
@@ -39,7 +40,9 @@ class PostGame:
         self.button_queue = []
         self.current_character_index = 0
         self.name_position_index = 0
-        self.entered_name = ["_"] * 3
+        self.entered_name = ["A", " ", " "]
+        self.game_end_message = ""
+        self.easter_egg_message = ""
 
         self.game_over_start_time = 0
         self.score_check_start_time = 0
@@ -55,7 +58,9 @@ class PostGame:
         self.button_queue = []
         self.current_character_index = 0
         self.name_position_index = 0
-        self.entered_name = ["_"] * 3
+        self.entered_name = ["A", " ", " "]
+        self.game_end_message = ""
+        self.easter_egg_message = ""
 
         self.game_over_start_time = time() * 1000
         self.score_check_start_time = 0
@@ -85,25 +90,30 @@ class PostGame:
 
         if (time() * 1000) - self.game_over_start_time >= GAME_OVER_DISPLAY_TIME_MS:
             self.current_step = SCORE_CHECK_STEP
+            self.screen.set_mode(0)
             self.score_check_start_time = time() * 1000
 
     def check_high_score(self):
         if self.score_repository.score_position(self.gameState.score) >= 10:
-            display_text = ["Your did it", "Congration", "Good Jorb"][random.randint(0, 2)]
-            self.screen.set_display_text(f"{display_text}! Play again?")
+            self.game_end_message = self.game_end_message or random.choice(
+                ["Your did it", "Combolations", "Good Jorb", "Weeeelp"])
+            self.screen.set_display_text(f"{self.game_end_message}! Play again?")
             self.screen.update()
             if (time() * 1000) - self.score_check_start_time >= SCORE_CHECK_DISPLAY_TIME_MS:
                 self.current_step = POST_GAME_END_STEP
         else:
             self.screen.set_display_text("New High Score!")
             self.screen.update()
-            if (time() * 1000) - self.score_check_start_time >= SCORE_CHECK_DISPLAY_TIME_MS:
+            if (time() * 1000) - self.score_check_start_time >= HIGH_SCORE_DISPLAY_TIME_MS:
                 self.current_step = NAME_INPUT_STEP
+                self.screen.set_mode(-1)
 
     def name_input_loop(self):
         # await input from flippers/start button to enter name
         # once three characters have been entered, move to easter egg step
         character_set = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        if self.current_character_index > 0:
+            character_set.insert(0, " ")
 
         self.button_queue = []
         self.handle_incoming_messages()
@@ -125,26 +135,30 @@ class PostGame:
             if self.name_position_index >= 3:
                 self.button_queue = []
                 self.current_step = EASTER_EGG_STEP
+                self.screen.set_mode(0)
                 self.easter_egg_start_time = time() * 1000
                 return
 
             self.entered_name[self.name_position_index] = character_set[self.current_character_index]
+            self.print_msg(self.entered_name)
 
         self.screen.set_name_data(self.name_position_index, self.entered_name)
         self.screen.update()
 
     def easter_egg_loop(self):
-        dumb_names = ["ASS", "BUM", "BUT", "DAM", "FAP", "FAT", "FUK", "KOK", "PEN", "PUS"]
+        dumb_names = ["ASS", "BUM", "BUT", "FAP", "CUM", "FUK", "FUC", "SEX", "WAP",
+                      "DIC", "DIK", "HOE", "JIZ", "KUM", "TIT", "LSD", "PEE", "POO"]
         responses = [
-            "Ur so funnyyyyyyyyyy.",
-            "Oh, you scamp!",
-            "That's hurtful........ lul jk good one"
+            "U R so funnyyyyyyyyyy.",
+            "Ohhhhhhhh, you scamp!",
+            "That's hurtful... jk lol"
         ]
         if "".join(self.entered_name) not in dumb_names:
             self.current_step = SCORE_SAVE_STEP
             return
 
-        self.screen.set_display_text(responses[random.randint(0, len(responses) - 1)])
+        self.easter_egg_message = self.easter_egg_message or random.choice(responses)
+        self.screen.set_display_text(self.easter_egg_message)
         self.screen.update()
 
         if (time() * 1000) - self.easter_egg_start_time >= EASTER_EGG_DISPLAY_TIME_MS:
