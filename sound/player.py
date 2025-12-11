@@ -15,6 +15,9 @@ class Player:
         self.sound_lib["spinner_points"] = Sound(self.sound_dir / 'component sounds/Spinner buttons', PLAY_RANDOM)
         self.sound_lib["mario_tube"] = Sound(self.sound_dir / 'component sounds/mario tube', PLAY_RANDOM)
         self.sound_lib["bikes"] = Sound(self.sound_dir / 'component sounds/multi-ball drop (bikes).mp3', PLAY_ONCE)
+        self.sound_lib["game_start"] = Sound(self.sound_dir / 'game start', PLAY_RANDOM)
+        self.sound_lib["game_end"] = Sound(self.sound_dir / 'game end', PLAY_RANDOM)
+        self.sound_lib["round_end"] = Sound(self.sound_dir / 'round end', PLAY_RANDOM)
 
     # game calls this to play a sound
     def play(self, alias: str):
