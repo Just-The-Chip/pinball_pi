@@ -106,7 +106,7 @@ class PostGame:
             self.screen.update()
             if (time() * 1000) - self.score_check_start_time >= HIGH_SCORE_DISPLAY_TIME_MS:
                 self.current_step = NAME_INPUT_STEP
-                self.screen.set_mode(-1)
+                self.screen.set_mode(2)  # name input mode
 
     def name_input_loop(self):
         # await input from flippers/start button to enter name

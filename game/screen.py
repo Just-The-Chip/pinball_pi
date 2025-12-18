@@ -30,6 +30,7 @@ class Screen(object):
         self.last_canvas_update = 0
         self.screen_mode = 0  # 0 = pregame, 1 = game, -1 = postgame
         self.scroll_speed = 1
+        self.vertical_scroll_speed = 1
 
         self.blink_interval_ms = 350
         # self.input_start = 0
@@ -37,19 +38,26 @@ class Screen(object):
         self.name_position_index = 0
 
         self.pregame_text_pos = self.offscreen_canvas.width
+        self.high_score_text_offset = 0
+        self.high_score_pause_time = 0
 
     def set_mode(self, mode):
-        if mode > 1 or mode < -1:
+        if mode > 3 or mode < 0:
             self.screen_mode = 0
         else:
             self.screen_mode = mode
 
         if self.screen_mode == 0:
+            self.set_random_text_color()
             self.pregame_text_pos = self.offscreen_canvas.width
-        elif self.screen_mode == -1:
+        elif self.screen_mode == 2:
             # self.input_start = time.time() * 1000
             self.current_name = ["_"] * 3
             self.name_position_index = 0
+        elif self.screen_mode == 3:
+            self.set_random_text_color()
+            self.high_score_text_offset = 0
+            self.high_score_pause_start_time = 0
 
     def set_random_text_color(self):
         random_red = random.randrange(0, 255)
@@ -106,6 +114,50 @@ class Screen(object):
             self.set_random_text_color()
             self.pregame_text_pos = self.offscreen_canvas.width
 
+    def high_score_update(self):
+        rounded_offset = round(self.high_score_text_offset)
+
+        graphics.DrawText(self.offscreen_canvas, self.font,
+                          2, 7 + rounded_offset, self.multiplier_color, "The Champs")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 16 + rounded_offset, self.text_color, "AAA 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 24 + rounded_offset, self.text_color, "BBB 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 32 + rounded_offset, self.text_color, "CCC 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 40 + rounded_offset, self.text_color, "DDD 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 48 + rounded_offset, self.text_color, "EEE 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 56 + rounded_offset, self.text_color, "FFF 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 64 + rounded_offset, self.text_color, "GGG 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 72 + rounded_offset, self.text_color, "HHH 12345678")
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 80 + rounded_offset, self.text_color, "III 12345678")
+
+        if self.high_score_text_offset == 0:
+            if self.high_score_pause_start_time == 0:
+                self.high_score_pause_start_time = time.time() * 1000
+
+            if (time.time() * 1000) - self.high_score_pause_start_time >= 1000:
+                self.high_score_pause_start_time = 0
+            else:
+                return
+
+        self.high_score_text_offset -= self.scroll_speed
+
     def game_update(self):
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 10, self.text_color, str(self.display_score))
@@ -130,6 +182,9 @@ class Screen(object):
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 25, self.text_color, display_name)
 
+    # def calc_scroll_speed(self, speed_value):
+    #     return max(1, min(5, self.scroll_speed))
+
     def update(self):
         current_time = time.time() * 1000
         if current_time >= self.last_canvas_update + 50:
@@ -146,5 +201,8 @@ class Screen(object):
             if self.screen_mode == 1:
                 self.game_update()
 
-            if self.screen_mode == -1:
+            if self.screen_mode == 2:
                 self.name_input_update()
+
+            if self.screen_mode == 3:
+                self.high_score_update()
