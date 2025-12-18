@@ -19,7 +19,8 @@ multiball = Multiball(
     drop_target_group=multiball_drop_targets,
     launcher=launcher,
     min_balls=1,
-    max_balls=4
+    max_balls=4,
+    sound="bikes"
 )
 
 

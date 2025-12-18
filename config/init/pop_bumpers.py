@@ -1,15 +1,17 @@
 from components.points_switch import PointsSwitch
+from components.simple_trigger import SimpleTrigger
+from comm.constants import COMM_SOLENOIDS2
 
 # slingshots (maybe I'll move this later)
 leftSling = PointsSwitch(points_value=50, light_group_id=4)
 rightSling = PointsSwitch(points_value=50, light_group_id=5)
 
 # top bumper
-pop_bumper1 = PointsSwitch(points_value=500, light_group_id=1, pattern_id=2)
+pop_bumper1 = PointsSwitch(points_value=500, light_group_id=1, pattern_id=2, sound="pop_bumper")
 
 # side bumpers
-pop_bumper2 = PointsSwitch(points_value=150, light_group_id=2)
-pop_bumper3 = PointsSwitch(points_value=150, light_group_id=3)
+pop_bumper2 = PointsSwitch(points_value=150, light_group_id=2, sound="pop_bumper")
+pop_bumper3 = PointsSwitch(points_value=150, light_group_id=3, sound="pop_bumper")
 
 # left static targets
 left_target1 = PointsSwitch(points_value=100, light_group_id=19, pattern_id=3, pattern_option=2)
@@ -17,6 +19,8 @@ left_target2 = PointsSwitch(points_value=100, light_group_id=18, pattern_id=3, p
 left_target3 = PointsSwitch(points_value=100, light_group_id=17, pattern_id=3, pattern_option=2)
 left_target4 = PointsSwitch(points_value=100, light_group_id=16, pattern_id=3, pattern_option=2)
 
+# Mario tube to second level
+mario_tube = SimpleTrigger(target_id=54, comm_name=COMM_SOLENOIDS2, sound="mario_tube")
 
 def init_pop_bumpers(game):
     game.register_message_handler(0, leftSling.handle_message)
@@ -40,3 +44,4 @@ def init_pop_bumpers(game):
     game.register_message_handler(9, left_target3.handle_message)
     # 10 is ascii for \n so we skip
     game.register_message_handler(11, left_target4.handle_message)
+    game.register_message_handler(55, mario_tube.handle_message)

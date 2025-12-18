@@ -19,9 +19,9 @@ class Sound:
     # loads the sound or sounds from path.  If path is a folder, it loads everything in the folder.
     def load_sounds(self, path: Path):
         if path.is_dir(): # there are multiple sound files
-            for p in path.iterdir(): # if item is not a directory, load it as a sound object
-                if not p.is_dir():
-                    self.sounds.append(Playback(str(p)))
+            for file_name in path.iterdir(): # if item is not a directory, load it as a sound object
+                if not file_name.is_dir():
+                    self.sounds.append(Playback(str(file_name)))
         else: # there is only one sound file
             self.sounds.append(Playback(str(path)))
 

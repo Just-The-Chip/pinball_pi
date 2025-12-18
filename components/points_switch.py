@@ -12,6 +12,7 @@ class PointsSwitch:
         self.variant_id: int = kwargs.pop("variant_id", 0)
         self.should_cycle_variants: bool = kwargs.pop("should_cycle_variants", True)
         self.max_variants: int = kwargs.pop("max_variants", 4)
+        self.sound: str = kwargs.pop("sound", None) # string representing the sound or sound group of the component
 
     def handle_message(self, msg, gameState):
         gameState.add_points(self.base_points)
@@ -23,7 +24,12 @@ class PointsSwitch:
             if self.should_cycle_variants:
                 self.cycle_variants()
 
-        return HandlerResponse(messages=result_messages)
+        if self.sound == None:
+            sounds_array = []
+        else:
+            sounds_array = [self.sound]
+
+        return HandlerResponse(messages=result_messages, sounds=sounds_array)
 
     def cycle_variants(self):
         max_variant_id = self.max_variants - 1

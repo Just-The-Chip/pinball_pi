@@ -16,6 +16,8 @@ from config.init.left_launcher import init_left_launcher
 from comm.base_comm import BaseComm
 from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
+from data.constants import IS_PLINKO_ACTIVE
+from player import Player
 # import serial
 import time
 
@@ -41,6 +43,7 @@ if __name__ == '__main__':
         COMM_SERVOS, BaseComm(name=COMM_SERVOS, port="/dev/ttyACM_ARDUINO1", message_size=3))
     comm_handler.register_comm(
         COMM_LIGHTS, BaseComm(name=COMM_LIGHTS, port="/dev/ttyACM_ARDUINO2", message_size=3))
+    player = Player()
 
     font = graphics.Font()
     font.LoadFont("../rpi-rgb-led-matrix/fonts/6x10.bdf")
@@ -57,7 +60,7 @@ if __name__ == '__main__':
     score_repository.load()
 
     pregame = PreGame(START_BUTTON_ID, comm_handler, screen)
-    game = Game(comm_handler, screen)
+    game = Game(comm_handler, screen, player)
     postgame = PostGame(
         comm_handler=comm_handler,
         screen=screen,

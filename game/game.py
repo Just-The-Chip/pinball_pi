@@ -3,6 +3,15 @@ from game.screen import Screen
 from comm.comm_handler import CommHandler
 from components.util import HandlerResponse
 from time import time
+from pathlib import Path
+import sys
+import os
+
+curpath = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, 'sound'))
+if (curpath not in sys.path):
+    sys.path.append(curpath)
+
+from player import Player
 
 
 class Game:
@@ -31,7 +40,7 @@ class Game:
     # Cleanup handlers will return a list of messages that need to be sent after the game ends.
     #   They may also do final modications to the state which could affect final score
 
-    def __init__(self, comm_handler, screen) -> None:
+    def __init__(self, comm_handler, screen, Player) -> None:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
         self.screen = screen
@@ -51,6 +60,8 @@ class Game:
         self.log_messages = False
         self.round_end_pause_length = 3250
         self.ball_save_pause_time = 2000
+
+        self.player = Player
 
     def register_launcher_callback(self, callback):
         self.launcher_callback = callback
@@ -90,6 +101,7 @@ class Game:
         self.screen.set_scroll_speed(2)
 
         self.execute_handlers(self.startup_handlers)
+        self.player.play("game_start")
 
     def check_start_round(self):
         if self.round_start_time == 0 or (time() * 1000) < self.round_start_time:
@@ -127,6 +139,7 @@ class Game:
             self.printMsg("ROUND END ------------------------------")
             self.execute_handlers(self.round_end_handlers)
             self.state.reduce_balls_remaining()
+            self.player.play("round_end")
             self.round_start_time = now + self.round_end_pause_length
             self.screen.set_mode(0)
             self.screen.set_display_text(f"BALL OUT!! Lives: {self.state.balls_remaining}")
@@ -152,6 +165,7 @@ class Game:
         # save high score
         # send end signal to comms to disable inputs, do light patterns, etc.
         # enable start handler/disable message and state handlers?
+        self.player.play("game_end")
         self.in_progress = False
         self.execute_handlers(self.cleanup_handlers)
         self.comm_handler.write_all_queued()
@@ -182,6 +196,10 @@ class Game:
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
 
+        for sound in response_queue.sounds:
+            print(sound)
+            self.player.play(sound)
+
     def execute_handlers(self, handlers):
         response_queue = HandlerResponse()  # list of tuple results consisting of comm name and message
 
@@ -193,6 +211,11 @@ class Game:
 
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
+        
+
+        for sound in response_queue.sounds:
+            print(sound)
+            self.player.play(sound)
 
     def update_screen(self):
         self.screen.set_display_score(self.state.score)
