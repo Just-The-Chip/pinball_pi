@@ -1,10 +1,16 @@
+import math
 from rgbmatrix import graphics, RGBMatrix, RGBMatrixOptions
 import time
 import sys
 import os
 import random
+from typing import List
+from .score_repository import ScoreRecord
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
+
+HIGH_SCORE_PAUSE_TIME_MS = 2000
+BLINK_INTERVAL_MS = 250
 
 
 class Screen(object):
@@ -29,17 +35,32 @@ class Screen(object):
         self.last_canvas_update = 0
         self.screen_mode = 0  # 0 = pregame, 1 = game, -1 = postgame
         self.scroll_speed = 1
+        self.vertical_scroll_speed = 1
+
+        self.current_name = []
+        self.name_position_index = 0
 
         self.pregame_text_pos = self.offscreen_canvas.width
+        self.top_scores: List[ScoreRecord] = []
+        self.high_score_text_offset = 0
+        self.high_score_pause_time = 0
 
     def set_mode(self, mode):
-        if mode > 1 or mode < -1:
+        if mode > 3 or mode < 0:
             self.screen_mode = 0
         else:
             self.screen_mode = mode
 
         if self.screen_mode == 0:
+            self.set_random_text_color()
             self.pregame_text_pos = self.offscreen_canvas.width
+        elif self.screen_mode == 2:
+            self.current_name = ["_"] * 3
+            self.name_position_index = 0
+        elif self.screen_mode == 3:
+            self.set_random_text_color()
+            self.high_score_text_offset = 0
+            self.high_score_pause_start_time = 0
 
     def set_random_text_color(self):
         random_red = random.randrange(0, 255)
@@ -56,6 +77,13 @@ class Screen(object):
             self.set_random_text_color()
 
         self.display_score = score
+
+    def set_name_data(self, name_position_index, entered_name):
+        self.name_position_index = name_position_index
+        self.current_name = entered_name
+
+    def set_top_scores(self, top_scores: List[ScoreRecord]):
+        self.top_scores = top_scores
 
     def set_multiplier(self, multiplier):
         self.multiplier = multiplier
@@ -92,6 +120,31 @@ class Screen(object):
             self.set_random_text_color()
             self.pregame_text_pos = self.offscreen_canvas.width
 
+    def high_score_update(self):
+        rounded_offset = round(self.high_score_text_offset)
+
+        graphics.DrawText(self.offscreen_canvas, self.font,
+                          2, 7 + rounded_offset, self.multiplier_color, "The Champs")
+
+        y_pos = 16
+        for record in self.top_scores:
+            score_text = f"{record['player'].ljust(4, ' ')} {str(record['score']).rjust(7, ' ')}"
+
+            graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                              2, y_pos + rounded_offset, self.text_color, score_text)
+            y_pos += 8
+
+        if self.high_score_text_offset == 0:
+            if self.high_score_pause_start_time == 0:
+                self.high_score_pause_start_time = time.time() * 1000
+
+            if (time.time() * 1000) - self.high_score_pause_start_time >= HIGH_SCORE_PAUSE_TIME_MS:
+                self.high_score_pause_start_time = 0
+            else:
+                return
+
+        self.high_score_text_offset -= self.scroll_speed
+
     def game_update(self):
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 10, self.text_color, str(self.display_score))
@@ -99,6 +152,22 @@ class Screen(object):
         bottom_text = f"x{str(self.multiplier)}  Ball: {str(self.balls_remaining)}"
         graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
                           2, 30, self.multiplier_color, bottom_text)
+
+    def name_input_update(self):
+        is_cursor_visible = math.floor(time.time() * 1000 / BLINK_INTERVAL_MS) % 2 == 0
+
+        display_name = ""
+        for index, letter in enumerate(self.current_name):
+            if is_cursor_visible and index == self.name_position_index:
+                display_name += "_" if letter != "_" else " "
+            else:
+                display_name += letter
+
+        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                          2, 10, self.text_color, f"Enter Name:")
+
+        graphics.DrawText(self.offscreen_canvas, self.font,
+                          2, 25, self.text_color, display_name)
 
     def update(self):
         current_time = time.time() * 1000
@@ -108,7 +177,7 @@ class Screen(object):
             self.last_canvas_update = current_time
             self.offscreen_canvas.Clear()
 
-            # start prompt, high scores (later)
+            # start prompt, final (later)
             if self.screen_mode == 0:
                 self.scroll_text_update()
 
@@ -116,6 +185,8 @@ class Screen(object):
             if self.screen_mode == 1:
                 self.game_update()
 
-            # for setting high score
-            # if self.screen_mode == -1:
-            #     self.postgame_update()
+            if self.screen_mode == 2:
+                self.name_input_update()
+
+            if self.screen_mode == 3:
+                self.high_score_update()

@@ -24,10 +24,10 @@ ballSaveIndicatorL = SimpleStateIndicator(
     state_callback=lambda gameState: gameState.get_state(LEFT_LANE_DOOR_KEY, False) or gameState.is_ball_save_active()
 )
 
-top_lane_rollover = StateSwitch(
-    toggle=True,
-    state_key=LEFT_LANE_DOOR_KEY
-)
+# top_lane_rollover = StateSwitch(
+#     toggle=True,
+#     state_key=LEFT_LANE_DOOR_KEY
+# )
 
 left_launcher_door = StateTrigger(
     target_id=51,
@@ -60,7 +60,7 @@ left_launcher = LeftLauncher(
 
 
 def init_left_launcher(game):
-    game.register_message_handler(16, top_lane_rollover.handle_message)
+    # game.register_message_handler(16, top_lane_rollover.handle_message)
     lane_handler.register_handlers(game)
 
     game.register_state_handler(left_launcher_door.handle_state)
