@@ -6,7 +6,12 @@ import os
 from pathlib import Path
 import tempfile
 import threading
-from typing import List, Optional
+from typing import List, Optional, TypedDict
+
+
+class ScoreRecord(TypedDict):
+    player: str
+    score: int
 
 
 class ScoreRepository:
@@ -14,7 +19,7 @@ class ScoreRepository:
     def __init__(self, path: Optional[str] = None, max_records: int = 10):
         self._path = Path(path) if path else Path("scores.csv")
 
-        self.scores = []
+        self.scores: List[ScoreRecord] = []
         self.max_records = max_records
         self.load()
 
@@ -34,7 +39,7 @@ class ScoreRepository:
             self.scores = self.scores[:self.max_records]
         self.save()
 
-    def top_scores(self, n: int = 10) -> List[dict]:
+    def top_scores(self, n: int = 10) -> List[ScoreRecord]:
         return self.scores[:n]
 
     def save(self) -> None:

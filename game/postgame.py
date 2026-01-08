@@ -1,8 +1,9 @@
 from time import time
 import random
 
-from game.score_repository import ScoreRepository
-from game.screen import Screen
+from .score_repository import ScoreRepository
+from .screen import Screen
+from data.swear_names import SWEAR_NAMES
 
 
 GAME_OVER_STEP = "game_over"
@@ -40,7 +41,7 @@ class PostGame:
         self.button_queue = []
         self.current_character_index = 0
         self.name_position_index = 0
-        self.entered_name = ["A", " ", " "]
+        self.entered_name = [" ", "_", "_", "_"]
         self.game_end_message = ""
         self.easter_egg_message = ""
 
@@ -58,7 +59,7 @@ class PostGame:
         self.button_queue = []
         self.current_character_index = 0
         self.name_position_index = 0
-        self.entered_name = ["A", " ", " "]
+        self.entered_name = [" ", "_", "_", "_"]
         self.game_end_message = ""
         self.easter_egg_message = ""
 
@@ -111,9 +112,7 @@ class PostGame:
     def name_input_loop(self):
         # await input from flippers/start button to enter name
         # once three characters have been entered, move to easter egg step
-        character_set = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        if self.current_character_index > 0:
-            character_set.insert(0, " ")
+        character_set = list(" ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
         self.button_queue = []
         self.handle_incoming_messages()
@@ -126,13 +125,12 @@ class PostGame:
                 self.current_character_index = (self.current_character_index - 1) % len(character_set)
             elif button == RIGHT_FLIPPER:
                 self.current_character_index = (self.current_character_index + 1) % len(character_set)
-            elif button == START_BUTTON:
+            elif button == START_BUTTON and (self.current_character_index > 0 or self.name_position_index > 0):
                 # select current character
-                # display_name[self.name_position_index] = character_set[self.current_character_index]
                 self.name_position_index += 1
                 self.current_character_index = 0
 
-            if self.name_position_index >= 3:
+            if self.name_position_index >= 4:
                 self.button_queue = []
                 self.current_step = EASTER_EGG_STEP
                 self.screen.set_mode(0)
@@ -146,14 +144,13 @@ class PostGame:
         self.screen.update()
 
     def easter_egg_loop(self):
-        dumb_names = ["ASS", "BUM", "BUT", "FAP", "CUM", "FUK", "FUC", "SEX", "WAP",
-                      "DIC", "DIK", "HOE", "JIZ", "KUM", "TIT", "LSD", "PEE", "POO"]
         responses = [
-            "U R so funnyyyyyyyyyy.",
-            "Ohhhhhhhh, you scamp!",
-            "That's hurtful... jk lol"
+            "U R so funnyyyyyyyyyy",
+            "That's hurtful... jk lol",
+            "What are you, a child?",
+            "High score DELETED... jk"
         ]
-        if "".join(self.entered_name) not in dumb_names:
+        if "".join(self.entered_name).strip() not in SWEAR_NAMES:
             self.current_step = SCORE_SAVE_STEP
             return
 
@@ -165,7 +162,7 @@ class PostGame:
             self.current_step = SCORE_SAVE_STEP
 
     def save_score(self):
-        self.score_repository.add_score("".join(self.entered_name), self.gameState.score)
+        self.score_repository.add_score("".join(self.entered_name).strip(), self.gameState.score)
         self.score_repository.save()
         self.current_step = POST_GAME_END_STEP
 

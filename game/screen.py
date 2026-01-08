@@ -4,8 +4,13 @@ import time
 import sys
 import os
 import random
+from typing import List
+from .score_repository import ScoreRecord
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
+
+HIGH_SCORE_PAUSE_TIME_MS = 2000
+BLINK_INTERVAL_MS = 250
 
 
 class Screen(object):
@@ -32,12 +37,11 @@ class Screen(object):
         self.scroll_speed = 1
         self.vertical_scroll_speed = 1
 
-        self.blink_interval_ms = 350
-        # self.input_start = 0
         self.current_name = []
         self.name_position_index = 0
 
         self.pregame_text_pos = self.offscreen_canvas.width
+        self.top_scores: List[ScoreRecord] = []
         self.high_score_text_offset = 0
         self.high_score_pause_time = 0
 
@@ -51,7 +55,6 @@ class Screen(object):
             self.set_random_text_color()
             self.pregame_text_pos = self.offscreen_canvas.width
         elif self.screen_mode == 2:
-            # self.input_start = time.time() * 1000
             self.current_name = ["_"] * 3
             self.name_position_index = 0
         elif self.screen_mode == 3:
@@ -78,6 +81,9 @@ class Screen(object):
     def set_name_data(self, name_position_index, entered_name):
         self.name_position_index = name_position_index
         self.current_name = entered_name
+
+    def set_top_scores(self, top_scores: List[ScoreRecord]):
+        self.top_scores = top_scores
 
     def set_multiplier(self, multiplier):
         self.multiplier = multiplier
@@ -120,38 +126,19 @@ class Screen(object):
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 7 + rounded_offset, self.multiplier_color, "The Champs")
 
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 16 + rounded_offset, self.text_color, "AAA 12345678")
+        y_pos = 16
+        for record in self.top_scores:
+            score_text = f"{record['player'].ljust(4, ' ')} {str(record['score']).rjust(7, ' ')}"
 
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 24 + rounded_offset, self.text_color, "BBB 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 32 + rounded_offset, self.text_color, "CCC 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 40 + rounded_offset, self.text_color, "DDD 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 48 + rounded_offset, self.text_color, "EEE 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 56 + rounded_offset, self.text_color, "FFF 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 64 + rounded_offset, self.text_color, "GGG 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 72 + rounded_offset, self.text_color, "HHH 12345678")
-
-        graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
-                          2, 80 + rounded_offset, self.text_color, "III 12345678")
+            graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
+                              2, y_pos + rounded_offset, self.text_color, score_text)
+            y_pos += 8
 
         if self.high_score_text_offset == 0:
             if self.high_score_pause_start_time == 0:
                 self.high_score_pause_start_time = time.time() * 1000
 
-            if (time.time() * 1000) - self.high_score_pause_start_time >= 1000:
+            if (time.time() * 1000) - self.high_score_pause_start_time >= HIGH_SCORE_PAUSE_TIME_MS:
                 self.high_score_pause_start_time = 0
             else:
                 return
@@ -167,7 +154,7 @@ class Screen(object):
                           2, 30, self.multiplier_color, bottom_text)
 
     def name_input_update(self):
-        is_cursor_visible = math.floor(time.time() * 1000 / self.blink_interval_ms) % 2 == 0
+        is_cursor_visible = math.floor(time.time() * 1000 / BLINK_INTERVAL_MS) % 2 == 0
 
         display_name = ""
         for index, letter in enumerate(self.current_name):
@@ -181,9 +168,6 @@ class Screen(object):
 
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 25, self.text_color, display_name)
-
-    # def calc_scroll_speed(self, speed_value):
-    #     return max(1, min(5, self.scroll_speed))
 
     def update(self):
         current_time = time.time() * 1000

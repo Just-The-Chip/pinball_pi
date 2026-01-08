@@ -80,7 +80,7 @@ if __name__ == '__main__':
     init_left_launcher(game)
 
     while True:
-        pregame.resume()
+        pregame.resume(score_repository.top_scores())
         pregame.loop()
 
         game.start()
