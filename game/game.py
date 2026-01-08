@@ -101,6 +101,7 @@ class Game:
         self.screen.set_scroll_speed(2)
 
         self.execute_handlers(self.startup_handlers)
+        self.player.unmute()
         self.player.play("game_start")
 
     def check_start_round(self):
@@ -139,7 +140,10 @@ class Game:
             self.printMsg("ROUND END ------------------------------")
             self.execute_handlers(self.round_end_handlers)
             self.state.reduce_balls_remaining()
-            self.player.play("round_end")
+            if self.state.balls_remaining == 0:
+                self.player.mute()
+            else:
+                self.player.play("round_end")
             self.round_start_time = now + self.round_end_pause_length
             self.screen.set_mode(0)
             self.screen.set_display_text(f"BALL OUT!! Lives: {self.state.balls_remaining}")

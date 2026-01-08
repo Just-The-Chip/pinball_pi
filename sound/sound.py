@@ -7,6 +7,7 @@ from random import random
 #PLAYBACK MODES:
 PLAY_ONCE = 0 # play one sound from the set, in order by sound file name
 PLAY_RANDOM = 1 # plays random sound from the set
+LOOP = 2 # loops the sound continuously until the stop method is called
 
 class Sound:
     def __init__(self, path: Path, playback_mode: int): # path: path to a sound file, or folder of sound files
@@ -25,10 +26,9 @@ class Sound:
         else: # there is only one sound file
             self.sounds.append(Playback(str(path)))
 
-
-
     def play(self):
-        
+        if self.playback_mode == LOOP:
+            self.sounds[self.sound_idx].loop_at_end(True)
         self.sounds[self.sound_idx].play()
         self.last_sound = self.sound_idx
         
@@ -38,7 +38,6 @@ class Sound:
                 self.sound_idx = 0
         if self.playback_mode == PLAY_RANDOM: # Set sound index to random number
             self.sound_idx = int(random() * (len(self.sounds)-1))
-            
 
     def stop(self):
         self.sounds[self.last_sound].stop()
