@@ -149,7 +149,9 @@ class Screen(object):
         graphics.DrawText(self.offscreen_canvas, self.font,
                           2, 10, self.text_color, str(self.display_score))
 
-        bottom_text = f"x{str(self.multiplier)}  Ball: {str(self.balls_remaining)}"
+        lives_string = ("\u2665" * self.balls_remaining).ljust(3, "\u2661")
+        lives_string = "".join(life + " " for life in lives_string).strip()
+        bottom_text = f"x{str(self.multiplier)}     {lives_string}"
         graphics.DrawText(self.offscreen_canvas, self.multiplier_font,
                           2, 30, self.multiplier_color, bottom_text)
 
