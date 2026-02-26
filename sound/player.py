@@ -24,7 +24,10 @@ class Player:
     # game calls this to play a sound
     def play(self, alias: str):
         if (not self.muted) or alias == "game_end": # if muted, only play the game_end sound
-            self.sound_lib[alias].play()
+            if alias in self.sound_lib:
+                self.sound_lib[alias].play()
+            else:
+                print("INVALID SOUND [", alias,"] PLAYED")
         else:
             print("MUTED")
     

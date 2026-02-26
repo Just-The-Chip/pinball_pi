@@ -16,9 +16,4 @@ class SimpleTrigger:
         return HandlerResponse(messages=[(self.comm_name, build_component_message(self.target_id, 0))])
     
     def handle_message(self, msg, gameState):
-        if self.sound == None:
-            sounds_array = []
-        else:
-            sounds_array = [self.sound]
-
-        return HandlerResponse(sounds=sounds_array)
+        return HandlerResponse(sounds=self.sound)

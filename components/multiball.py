@@ -121,12 +121,7 @@ class Multiball:
         reclose_time = (time() * 1000) + self.reclose_delay
         gameState.set_state(self.reclose_time_key, reclose_time)
 
-        if self.sound == None:
-            sounds_array = []
-        else:
-            sounds_array = [self.sound]
-
-        return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.latch_id, 0))], sounds=sounds_array)
+        return HandlerResponse(messages=[(COMM_SERVOS, build_component_message(self.latch_id, 0))], sounds=self.sound)
 
     def close_door(self, gameState):
         self.printMsg("CLOSE THE DOOR!")

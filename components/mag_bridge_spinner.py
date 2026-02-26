@@ -1,6 +1,6 @@
 from comm.constants import COMM_SOLENOIDS
 from comm.util import build_component_message
-from components.util import HandlerResponse
+from components.util import HandlerResponse, STOP
 from data.constants import MAG_BRIDGE_TRAVELING_KEY, MAG_BRIDGE_ERROR_KEY
 
 
@@ -12,7 +12,7 @@ class MagBridgeSpinner:
         return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.spinner_id, 1))])
 
     def stop_spinner(self):
-        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.spinner_id, 0))])
+        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.spinner_id, 0))], sounds=("circus", STOP))
 
     def handle_magbridge_complete(self, gameState):
         bridge_is_traveling = gameState.get_state_change(MAG_BRIDGE_TRAVELING_KEY, False)

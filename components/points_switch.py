@@ -24,12 +24,7 @@ class PointsSwitch:
             if self.should_cycle_variants:
                 self.cycle_variants()
 
-        if self.sound == None:
-            sounds_array = []
-        else:
-            sounds_array = [self.sound]
-
-        return HandlerResponse(messages=result_messages, sounds=sounds_array)
+        return HandlerResponse(messages=result_messages, sounds=self.sound)
 
     def cycle_variants(self):
         max_variant_id = self.max_variants - 1

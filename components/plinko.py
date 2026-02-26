@@ -18,7 +18,7 @@ class Plinko:
         is_plinko = gameState.get_state_change(IS_PLINKO_ACTIVE, False)
 
         if is_plinko["from"] == False and is_plinko["to"] == True:
-            return HandlerResponse(messages=self.start_lift())
+            return HandlerResponse(messages=self.start_lift(), sounds="circus")
 
         return HandlerResponse()
 

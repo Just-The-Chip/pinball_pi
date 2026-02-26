@@ -1,7 +1,7 @@
 from game.state import State
 from game.screen import Screen
 from comm.comm_handler import CommHandler
-from components.util import HandlerResponse
+from components.util import HandlerResponse, STOP
 from time import time
 from pathlib import Path
 import sys
@@ -142,6 +142,7 @@ class Game:
             self.state.reduce_balls_remaining()
             if self.state.balls_remaining == 0:
                 self.player.mute()
+                print("PLAYER MUTED")
             else:
                 self.player.play("round_end")
             self.round_start_time = now + self.round_end_pause_length
@@ -170,6 +171,7 @@ class Game:
         # send end signal to comms to disable inputs, do light patterns, etc.
         # enable start handler/disable message and state handlers?
         self.player.play("game_end")
+        self.player.mute()
         self.in_progress = False
         self.execute_handlers(self.cleanup_handlers)
         self.comm_handler.write_all_queued()
@@ -200,9 +202,7 @@ class Game:
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
 
-        for sound in response_queue.sounds:
-            print(sound)
-            self.player.play(sound)
+        self.play_sounds(response_queue.sounds)
 
     def execute_handlers(self, handlers):
         response_queue = HandlerResponse()  # list of tuple results consisting of comm name and message
@@ -216,10 +216,7 @@ class Game:
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
         
-
-        for sound in response_queue.sounds:
-            print(sound)
-            self.player.play(sound)
+        self.play_sounds(response_queue.sounds)
 
     def update_screen(self):
         self.screen.set_display_score(self.state.score)
@@ -230,3 +227,10 @@ class Game:
     def printMsg(self, message, force=False):
         if self.log_messages or force:
             print(message)
+
+    def play_sounds(self, sounds: list[tuple[str, int]]):
+        for sound in sounds:
+            if sound[1] == STOP:
+                self.player.stop(sound[0])
+            else:
+                self.player.play(sound[0])
