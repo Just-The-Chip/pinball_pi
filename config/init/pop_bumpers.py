@@ -3,11 +3,11 @@ from components.simple_trigger import SimpleTrigger
 from comm.constants import COMM_SOLENOIDS2
 
 # slingshots (maybe I'll move this later)
-leftSling = PointsSwitch(points_value=50, light_group_id=4)
-rightSling = PointsSwitch(points_value=50, light_group_id=5)
+leftSling = PointsSwitch(points_value=50, light_group_id=4, sound="slingshot")
+rightSling = PointsSwitch(points_value=50, light_group_id=5, sound="slingshot")
 
 # top bumper
-pop_bumper1 = PointsSwitch(points_value=500, light_group_id=1, pattern_id=2, sound="pop_bumper")
+pop_bumper1 = PointsSwitch(points_value=500, light_group_id=1, pattern_id=2, sound="rear_popper")
 
 # side bumpers
 pop_bumper2 = PointsSwitch(points_value=150, light_group_id=2, sound="pop_bumper")

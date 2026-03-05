@@ -75,6 +75,6 @@ class LeftLauncher:
             print("FJDKSFJSKF LAUNCHE THE BAAAAALLLLLLLL")
             gameState.set_state(self.launcher_pause_key, 0)
             gameState.set_state(self.launch_key, True)
-            return HandlerResponse(messages=[(COMM_SOLENOIDS2, build_component_message(self.launcher_id))])
+            return HandlerResponse(messages=[(COMM_SOLENOIDS2, build_component_message(self.launcher_id))], sounds="ball_save_solenoid")
 
         return HandlerResponse()

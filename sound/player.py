@@ -20,6 +20,11 @@ class Player:
         self.sound_lib["game_end"] = Sound(self.sound_dir / 'game end', PLAY_RANDOM)
         self.sound_lib["round_end"] = Sound(self.sound_dir / 'round end', PLAY_RANDOM)
         self.sound_lib["circus"] = Sound(self.sound_dir / 'songs/circus-music-388517.mp3', LOOP)
+        self.sound_lib["slingshot"] = Sound(self.sound_dir / 'component sounds/slingshot', PLAY_RANDOM)
+        self.sound_lib["rear_popper"] = Sound(self.sound_dir / 'component sounds/rear_popper.mp3', PLAY_ONCE)
+        self.sound_lib["finale_reject"] = Sound(self.sound_dir / 'component sounds/finale_rejected.mp3', PLAY_ONCE)
+        self.sound_lib["ball_save_solenoid"] = Sound(self.sound_dir / 'component sounds/ball-save-spring.mp3', PLAY_ONCE)
+        self.sound_lib["finale_unlock"] = Sound(self.sound_dir / 'component sounds/finale-unlock.mp3', PLAY_ONCE)
 
     # game calls this to play a sound
     def play(self, alias: str):

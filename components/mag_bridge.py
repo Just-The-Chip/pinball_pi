@@ -28,7 +28,9 @@ class MagBridge:
                 gameState.has_state_changed(MAG_BRIDGE_ERROR_KEY, False)):
             print("OMG ITS GAME TIME................................")
 
-            return self.build_light_message(gameState)
+            response = self.build_light_message(gameState)
+            response.append_sound("finale_unlock")
+            return response
 
         return HandlerResponse()
 
@@ -86,7 +88,7 @@ class MagBridge:
         return HandlerResponse()
 
     def reject_ball(self, gameState):
-        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.rejector_id))])
+        return HandlerResponse(messages=[(COMM_SOLENOIDS, build_component_message(self.rejector_id))], sounds="finale_reject")
 
     def trigger_bridge(self, gameState):
         gameState.set_state(self.is_traveling_key, True)
