@@ -175,6 +175,7 @@ class Game:
         self.in_progress = False
         self.execute_handlers(self.cleanup_handlers)
         self.comm_handler.write_all_queued()
+        self.screen.clear_interrupt_animation()
 
     # 00000000  0000 0000
     # ---id---  ---msg---
@@ -204,6 +205,9 @@ class Game:
 
         self.play_sounds(response_queue.sounds)
 
+        if response_queue.animation_interrupt is not None:
+            self.screen.set_interrupt_animation(**response_queue.animation_interrupt)
+
     def execute_handlers(self, handlers):
         response_queue = HandlerResponse()  # list of tuple results consisting of comm name and message
 
@@ -215,8 +219,11 @@ class Game:
 
         for comm_name, result_message in response_queue.messages:
             self.comm_handler.queue_message(comm_name, result_message)
-        
+
         self.play_sounds(response_queue.sounds)
+
+        if response_queue.animation_interrupt is not None:
+            self.screen.set_interrupt_animation(**response_queue.animation_interrupt)
 
     def update_screen(self):
         self.screen.set_display_score(self.state.score)

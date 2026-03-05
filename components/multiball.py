@@ -26,7 +26,7 @@ class Multiball:
         self.reclose_time_key = "reclose_time"
         self.log_messages = True
 
-        self.sound: str = kwargs.pop("sound", None) # string representing the sound or sound group of the component
+        self.sound: str = kwargs.pop("sound", None)  # string representing the sound or sound group of the component
 
     def bank_ready(self, gameState):
         return gameState.get_state(self.bank_ready_key, False)
@@ -66,7 +66,10 @@ class Multiball:
             gameState.reduce_balls_in_play()
             return HandlerResponse()
 
-        return self.launcher.trigger_component(gameState)
+        response = self.launcher.trigger_component(gameState)
+        response.animation_interrupt = {"animation": "pokeball",
+                                        "text": f"Banked: {bank_count}", "scroll_speed": 2, "duration": 3000}
+        return response
 
     def handle_door_latch(self, gameState):
         trigger_time = self.latch_trigger_time(gameState)

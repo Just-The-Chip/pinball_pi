@@ -1,4 +1,5 @@
 import math
+from animations.animation_player import AnimationPlayer
 from rgbmatrix import graphics, RGBMatrix, RGBMatrixOptions
 import time
 import sys
@@ -15,6 +16,8 @@ BLINK_INTERVAL_MS = 250
 
 class Screen(object):
     def __init__(self, *args, **kwargs):
+        self.animation_player: AnimationPlayer = kwargs.get("animation_player")
+
         self.font = kwargs.get("font")
         self.multiplier_font = kwargs.get("multiplier_font")
         self.multiplier_color = graphics.Color(255, 64, 10)
@@ -96,6 +99,12 @@ class Screen(object):
 
     def set_scroll_speed(self, speed):
         self.scroll_speed = speed
+
+    def set_interrupt_animation(self, **kwargs):
+        self.animation_player.start_animation(**kwargs)
+
+    def clear_interrupt_animation(self):
+        self.animation_player.clear_animation()
 
     def setup_matrix(self):
         options = RGBMatrixOptions()
@@ -179,16 +188,23 @@ class Screen(object):
             self.last_canvas_update = current_time
             self.offscreen_canvas.Clear()
 
-            # start prompt, final (later)
-            if self.screen_mode == 0:
-                self.scroll_text_update()
+            if self.animation_player.is_done():
+                self.animation_player.clear_animation()
+                self.mode_update()
+            else:
+                self.animation_player.update(self.offscreen_canvas)
 
-            # current score
-            if self.screen_mode == 1:
-                self.game_update()
+    def mode_update(self):
+        # start prompt, final (later)
+        if self.screen_mode == 0:
+            self.scroll_text_update()
 
-            if self.screen_mode == 2:
-                self.name_input_update()
+        # current score
+        if self.screen_mode == 1:
+            self.game_update()
 
-            if self.screen_mode == 3:
-                self.high_score_update()
+        if self.screen_mode == 2:
+            self.name_input_update()
+
+        if self.screen_mode == 3:
+            self.high_score_update()

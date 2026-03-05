@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from animations.animation_player import AnimationPlayer
 from rgbmatrix import graphics
 from game.game import Game
 from game.pregame import PreGame
@@ -50,7 +51,9 @@ if __name__ == '__main__':
     multiplier_font = graphics.Font()
     multiplier_font.LoadFont("../rpi-rgb-led-matrix/fonts/5x8.bdf")
 
-    screen = Screen(font=font, multiplier_font=multiplier_font)
+    interrupt_player = AnimationPlayer(font=font)
+    interrupt_player.load_animations(f"{os.path.dirname(__file__)}/config/data/animations.yml")
+    screen = Screen(font=font, multiplier_font=multiplier_font, animation_player=interrupt_player)
 
     score_path = f"{os.path.dirname(__file__)}/../.pinball/scores.csv"
     if not os.path.exists(os.path.dirname(score_path)):

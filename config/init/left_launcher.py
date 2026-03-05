@@ -1,3 +1,4 @@
+from components.util import HandlerResponse
 from data.constants import LEFT_LANE_DOOR_KEY
 from comm.constants import COMM_SERVOS
 from components.state_switch import StateSwitch
@@ -59,8 +60,14 @@ left_launcher = LeftLauncher(
 )
 
 
+def animation_test(msg, gameState):
+    print("Triggering animation")
+    return HandlerResponse(animation_interrupt={"animation": "storm", "text": "Test animation", "duration": 5000})
+
+
 def init_left_launcher(game):
     # game.register_message_handler(16, top_lane_rollover.handle_message)
+    game.register_message_handler(16, animation_test)
     lane_handler.register_handlers(game)
 
     game.register_state_handler(left_launcher_door.handle_state)

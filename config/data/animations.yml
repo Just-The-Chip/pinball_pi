@@ -1,0 +1,9 @@
+animations:
+- name: "storm"
+  path: "Tropical_Storm_Cindy_off_the_Gulf_Coast.gif"
+  brightness: 0.5
+  text_color: [255, 255, 255]
+- name: "pokeball"
+  path: "pokeball.gif"
+  brightness: 0.4
+  text_color: [0, 0, 20]
