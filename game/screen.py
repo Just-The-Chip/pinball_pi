@@ -182,7 +182,7 @@ class Screen(object):
 
     def update(self):
         current_time = time.time() * 1000
-        if current_time >= self.last_canvas_update + 50:
+        if current_time >= self.last_canvas_update + 16:
             self.offscreen_canvas = self.matrix.SwapOnVSync(
                 self.offscreen_canvas)
             self.last_canvas_update = current_time

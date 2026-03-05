@@ -35,7 +35,7 @@ class Animation:
             except (EOFError, IndexError, OSError):
                 break
 
-            duration = gif.info.get("duration", 100) / 1000.0
+            duration = gif.info.get("duration", 100)
 
             frame = gif.copy().convert("RGB")
 
