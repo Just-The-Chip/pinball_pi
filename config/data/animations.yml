@@ -6,4 +6,4 @@ animations:
 - name: "pokeball"
   path: "pokeball.gif"
   brightness: 0.4
-  text_color: [0, 0, 20]
+  text_color: [128, 128, 128]

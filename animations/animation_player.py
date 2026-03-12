@@ -109,10 +109,16 @@ class AnimationPlayer:
         length = graphics.DrawText(canvas, self.font,
                                    self.text_position, 15, self.text_color, self.text)
 
-        self.text_position -= self.scroll_speed
+        now = perf_counter() * 1000
+        if now - self.text_interval_start_time >= self.text_scroll_interval:
+            next_interval_elapsed_time = (now - self.text_interval_start_time) % self.text_scroll_interval
+            elapsed_frames = int((now - self.text_interval_start_time) / self.text_scroll_interval)
 
-        if self.text_position + length < 0:
-            self.text_position = self.canvas_width
+            self.text_position -= self.scroll_speed * elapsed_frames
+            self.text_interval_start_time = now - next_interval_elapsed_time
+
+            if self.text_position + length < 0:
+                self.text_position = self.canvas_width
 
     def is_done(self) -> bool:
         return self.animation_start_time + self.duration <= perf_counter() * 1000
