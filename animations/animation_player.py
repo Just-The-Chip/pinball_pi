@@ -57,8 +57,8 @@ class AnimationPlayer:
 
         if self.animation is not None:
             self.current_frame = self.animation.get_frame(self.current_frame_index)
-            self.current_frame_start_time = perf_counter() * 1000
             self.animation_start_time = perf_counter() * 1000
+            self.current_frame_start_time = self.animation_start_time
 
     def clear_animation(self):
         self.animation = None
@@ -86,11 +86,15 @@ class AnimationPlayer:
             return
 
         now = perf_counter() * 1000
+        elapsed_time = now - self.current_frame_start_time
 
-        if now - self.current_frame_start_time >= self.current_frame["duration"]:
-            self.current_frame_index = (self.current_frame_index + 1) % self.animation.frame_count()
+        next_frame_index, next_frame = self.animation.get_next_frame(
+            self.current_frame_index, elapsed_time)
+
+        if next_frame is not None and next_frame_index != self.current_frame_index:
+            self.current_frame_index = next_frame_index
+            self.current_frame = next_frame
             self.current_frame_start_time = now
-            self.current_frame = self.animation.get_frame(self.current_frame_index)
 
         canvas.SetImage(self.current_frame["image"], 0, 0)
 

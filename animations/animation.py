@@ -47,6 +47,27 @@ class Animation:
                 duration=duration
             ))
 
+    def get_next_frame(self, start_frame_index: int, elapsed_time: int) -> tuple[int, FrameData]:
+        if not self.frames:
+            return start_frame_index, None
+
+        if start_frame_index >= len(self.frames):
+            start_frame_index = 0
+
+        relative_elapsed_time = elapsed_time % self.total_duration()
+
+        frame_time = 0
+        frame_count = self.frame_count()
+        calculated_frame_index = start_frame_index
+        prev_frame_index = calculated_frame_index
+
+        while frame_time <= relative_elapsed_time:
+            frame_time += self.frames[calculated_frame_index]["duration"]
+            prev_frame_index = calculated_frame_index
+            calculated_frame_index = (calculated_frame_index + 1) % frame_count
+
+        return prev_frame_index, self.frames[prev_frame_index]
+
     def get_frame(self, index: int) -> FrameData:
         return self.frames[index]
 
