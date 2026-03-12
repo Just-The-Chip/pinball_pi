@@ -4,11 +4,14 @@ from rgbmatrix import graphics
 from time import perf_counter
 import yaml
 
+DEFAULT_TEXT_SCROLL_INTERVAL = 50
+
 
 class AnimationPlayer:
     def __init__(self, **kwargs):
         self.animation_dict: dict[str, Animation] = {}
         self.font = kwargs.get("font")
+        self.text_scroll_interval = kwargs.get("text_scroll_interval", DEFAULT_TEXT_SCROLL_INTERVAL)
 
         self.animation: Animation = None
         self.current_frame_index = 0
@@ -17,6 +20,7 @@ class AnimationPlayer:
         self.animation_start_time = 0
         self.duration = 0
         self.text = None
+        self.text_interval_start_time = 0
         self.text_color = (255, 255, 255)
         self.scroll_speed = 1
         self.canvas_width = 64
@@ -88,13 +92,13 @@ class AnimationPlayer:
         now = perf_counter() * 1000
         elapsed_time = now - self.current_frame_start_time
 
-        next_frame_index, next_frame = self.animation.get_next_frame(
+        next_frame_index, next_frame_elapsed_time, next_frame = self.animation.get_next_frame(
             self.current_frame_index, elapsed_time)
 
         if next_frame is not None and next_frame_index != self.current_frame_index:
             self.current_frame_index = next_frame_index
             self.current_frame = next_frame
-            self.current_frame_start_time = now
+            self.current_frame_start_time = now - next_frame_elapsed_time
 
         canvas.SetImage(self.current_frame["image"], 0, 0)
 
