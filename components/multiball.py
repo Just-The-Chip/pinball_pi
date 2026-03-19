@@ -61,14 +61,19 @@ class Multiball:
         gameState.set_state(self.bank_count_key, bank_count)
         self.printMsg(f"Multiball bank count: {bank_count}")
 
+        response = HandlerResponse()
+        response.animation_interrupt = {"animation": "pokeball",
+                                        "text": f"Banked: {bank_count}", "scroll_speed": 2, "duration": 3000}
+        response.append_sound("multiball_deposit")
+
+        #this prevents multiple balls from queing in the launcher (because multiball deposits trigger a new ball to get queued)
         if gameState.balls_in_play > 1:
             self.printMsg(f"Balls in play: {gameState.balls_in_play}")
             gameState.reduce_balls_in_play()
             return HandlerResponse()
 
-        response = self.launcher.trigger_component(gameState)
-        response.animation_interrupt = {"animation": "pokeball",
-                                        "text": f"Banked: {bank_count}", "scroll_speed": 2, "duration": 3000}
+        response.extend(self.launcher.trigger_component(gameState))
+        
         return response
 
     def handle_door_latch(self, gameState):
