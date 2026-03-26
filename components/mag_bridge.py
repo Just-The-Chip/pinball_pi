@@ -16,6 +16,7 @@ class MagBridge:
         self.ball_catch_light_group: int | None = kwargs.pop("ball_catch_light_group", None)
         self.ball_catch_pattern_id: int = kwargs.pop("ball_catch_pattern_id", 2)
         self.ball_catch_variant_id: int = kwargs.pop("ball_catch_variant_id", 2)
+        self.ball_catch_pattern_option: int = kwargs.pop("ball_catch_pattern_option", 0)
 
         self.is_active_key = "mag_bridge_is_active"
         self.is_traveling_key = MAG_BRIDGE_TRAVELING_KEY
@@ -106,6 +107,7 @@ class MagBridge:
         elif gameState.get_state(self.is_active_key, False) is True:
             pattern_id = self.ball_catch_pattern_id
             variant_id = self.ball_catch_variant_id
-            light_message = build_light_message(self.ball_catch_light_group, pattern_id, variant_id)
+            option = self.ball_catch_pattern_option
+            light_message = build_light_message(self.ball_catch_light_group, pattern_id, variant_id, option)
 
         return HandlerResponse(messages=[(COMM_LIGHTS, light_message)])

@@ -17,7 +17,9 @@ mag_bridge_switch_group = StateSwitchGroup(
 mag_bridge = MagBridge(
     switch_group=mag_bridge_switch_group,
     ball_catch_light_group=11,
+    ball_catch_pattern_id=7,
     ball_catch_variant_id=0,
+    ball_catch_pattern_option=20,
     rejector_id=22,
     mag_bridge_id=23,
 )

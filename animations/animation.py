@@ -56,17 +56,17 @@ class Animation:
 
         relative_elapsed_time = elapsed_time % self.total_duration()
 
-        frame_time = 0
+        frame_end_time = 0
         frame_count = self.frame_count()
         calculated_frame_index = start_frame_index
         prev_frame_index = calculated_frame_index
 
-        while frame_time < relative_elapsed_time:
-            frame_time += self.frames[calculated_frame_index]["duration"]
+        while frame_end_time < relative_elapsed_time:
+            frame_end_time += self.frames[calculated_frame_index]["duration"]
             prev_frame_index = calculated_frame_index
             calculated_frame_index = (calculated_frame_index + 1) % frame_count
 
-        frame_start_time = frame_time - self.frames[prev_frame_index]["duration"]
+        frame_start_time = frame_end_time - self.frames[prev_frame_index]["duration"]
         frame_elapsed_time = relative_elapsed_time - frame_start_time
         return prev_frame_index, frame_elapsed_time, self.frames[prev_frame_index]
 
