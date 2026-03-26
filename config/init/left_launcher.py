@@ -33,7 +33,8 @@ ballSaveIndicatorL = SimpleStateIndicator(
 left_launcher_door = StateTrigger(
     target_id=51,
     comm_name=COMM_SERVOS,
-    state_key=LEFT_LANE_DOOR_KEY
+    state_key=LEFT_LANE_DOOR_KEY,
+    trigger_sound="unlock_left_launcher"
 )
 
 bottom_lane_group = StateSwitchGroup(

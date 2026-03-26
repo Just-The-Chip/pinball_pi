@@ -20,10 +20,6 @@ class HandlerResponse:
     def append_message(self, message: Message):
         self.messages.append(message)
 
-    # NOT USED
-    def extend_sounds(self, sounds: list[str]):
-        self.sounds.extend(sounds)
-
     def append_sound(self, sound: str, mode: int = PLAY):
         self.sounds.append((sound, mode))
 

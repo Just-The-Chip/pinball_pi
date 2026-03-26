@@ -7,13 +7,11 @@ class SimpleTrigger:
     def __init__(self, **kwargs) -> None:
         self.target_id: int = kwargs.pop("target_id")
         self.comm_name: str = kwargs.pop("comm_name", COMM_SOLENOIDS)
-        self.sound: str = kwargs.pop("sound", None) # string representing the sound or sound group of the component
+        self.trigger_sound: str = kwargs.pop("trigger_sound", "")
+        self.untrigger_sound: str = kwargs.pop("untrigger_sound", "")
 
     def trigger_component(self, _gameState):
-        return HandlerResponse(messages=[(self.comm_name, build_component_message(self.target_id))])
+        return HandlerResponse(messages=[(self.comm_name, build_component_message(self.target_id))], sounds=self.trigger_sound)
 
     def untrigger_component(self, _gameState):
-        return HandlerResponse(messages=[(self.comm_name, build_component_message(self.target_id, 0))])
-    
-    def handle_message(self, msg, gameState):
-        return HandlerResponse(sounds=self.sound)
+        return HandlerResponse(messages=[(self.comm_name, build_component_message(self.target_id, 0))], sounds=self.untrigger_sound)

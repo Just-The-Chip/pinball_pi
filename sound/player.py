@@ -25,6 +25,8 @@ class Player:
         self.sound_lib["finale_reject"] = Sound(self.sound_dir / 'component sounds/finale_rejected.mp3', PLAY_ONCE)
         self.sound_lib["ball_save_solenoid"] = Sound(self.sound_dir / 'component sounds/ball-save-spring.mp3', PLAY_ONCE)
         self.sound_lib["finale_unlock"] = Sound(self.sound_dir / 'component sounds/finale-unlock.mp3', PLAY_ONCE)
+        self.sound_lib["multiball_deposit"] = Sound(self.sound_dir / 'component sounds/multi-ball-deposit.mp3', PLAY_ONCE)
+        self.sound_lib["unlock_left_launcher"] = Sound(self.sound_dir / 'component sounds/left-launcher-unlock.mp3', PLAY_ONCE)
 
     # game calls this to play a sound
     def play(self, alias: str):
