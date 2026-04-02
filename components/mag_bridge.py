@@ -21,7 +21,21 @@ class MagBridge:
         self.is_active_key = "mag_bridge_is_active"
         self.is_traveling_key = MAG_BRIDGE_TRAVELING_KEY
 
+        self.switch_sounds = {
+            0:"",
+            1:"headshot",
+            2:"double_kill",
+            3:"triple_kill"
+        }
+        self.last_N_triggered = 0
+
     def handle_state(self, gameState):
+        response = HandlerResponse()
+        N_triggered = self.switch_group.triggered_count(gameState)
+        if N_triggered > 0 and N_triggered < 4 and N_triggered != self.last_N_triggered:
+            response.append_sound(self.switch_sounds[N_triggered])
+            self.last_N_triggered = N_triggered
+        
         state_val = self.switch_group.is_group_fully_triggered(gameState)
         gameState.set_state(self.is_active_key, state_val)
 
@@ -29,11 +43,11 @@ class MagBridge:
                 gameState.has_state_changed(MAG_BRIDGE_ERROR_KEY, False)):
             print("OMG ITS GAME TIME................................")
 
-            response = self.build_light_message(gameState)
-            response.append_sound("finale_unlock")
-            return response
+            response.extend(self.build_light_message(gameState))
+            if (gameState.get_state(self.is_active_key, False)):
+                response.append_sound("finale_unlock")
 
-        return HandlerResponse()
+        return response
 
     def handle_cleanup(self, gameState):
         # maybe later ensure mag bridge is reset?

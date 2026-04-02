@@ -27,6 +27,10 @@ class Player:
         self.sound_lib["finale_unlock"] = Sound(self.sound_dir / 'component sounds/finale-unlock.mp3', PLAY_ONCE)
         self.sound_lib["multiball_deposit"] = Sound(self.sound_dir / 'component sounds/multi-ball-deposit.mp3', PLAY_ONCE)
         self.sound_lib["unlock_left_launcher"] = Sound(self.sound_dir / 'component sounds/left-launcher-unlock.mp3', PLAY_ONCE)
+        self.sound_lib["double_kill"] = Sound(self.sound_dir / 'component sounds/unreal sounds/01_double kill.wav', PLAY_ONCE)
+        self.sound_lib["headshot"] = Sound(self.sound_dir / 'component sounds/unreal sounds/00_headshot.wav', PLAY_ONCE)
+        self.sound_lib["triple_kill"] = Sound(self.sound_dir / 'component sounds/unreal sounds/02_triple kill.wav', PLAY_ONCE)
+        self.sound_lib["goat"] = Sound(self.sound_dir / 'goats', PLAY_RANDOM)
 
     # game calls this to play a sound
     def play(self, alias: str):
