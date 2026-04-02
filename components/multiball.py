@@ -66,14 +66,14 @@ class Multiball:
                                         "text": f"Banked: {bank_count}", "scroll_speed": 2, "duration": 3000}
         response.append_sound("multiball_deposit")
 
-        #this prevents multiple balls from queing in the launcher (because multiball deposits trigger a new ball to get queued)
+        # this prevents multiple balls from queing in the launcher (because multiball deposits trigger a new ball to get queued)
         if gameState.balls_in_play > 1:
             self.printMsg(f"Balls in play: {gameState.balls_in_play}")
             gameState.reduce_balls_in_play()
             return HandlerResponse()
 
         response.extend(self.launcher.trigger_component(gameState))
-        
+
         return response
 
     def handle_door_latch(self, gameState):
@@ -105,6 +105,8 @@ class Multiball:
 
         if self.bank_count(gameState) >= self.min_balls:
             result_queue.extend(self.release_multiball(gameState))
+            result_queue.animation_interrupt = {"animation": "boom",
+                                                "text": "Multiball!", "scroll_speed": 2, "duration": 2100}
 
         return result_queue
 

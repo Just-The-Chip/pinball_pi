@@ -11,3 +11,7 @@ animations:
   path: "kirbysleep.gif"
   brightness: 0.5
   text_color: [251, 147, 149]
+- name: "boom"
+  path: "boom.gif"
+  brightness: 0.5
+  text_color: [250, 100, 0]
