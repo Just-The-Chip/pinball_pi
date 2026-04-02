@@ -7,3 +7,7 @@ animations:
   path: "pokeball.gif"
   brightness: 0.4
   text_color: [128, 128, 128]
+- name: "kirby_sleep"
+  path: "kirbysleep.gif"
+  brightness: 0.5
+  text_color: [128, 128, 128]

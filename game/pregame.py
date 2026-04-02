@@ -9,7 +9,7 @@ HIGH_SCORE_DISPLAY = 1
 START_GAME_TIME_MS = 8000
 HIGH_SCORE_TIME_MS = 15000
 
-START_GAME_SCROLL_SPEED = 1
+START_GAME_SCROLL_SPEED = 1.5
 HIGH_SCORE_SCROLL_SPEED = 0.35
 
 
@@ -30,6 +30,7 @@ class PreGame:
         self.screen.set_mode(3)
         self.screen.set_scroll_speed(HIGH_SCORE_SCROLL_SPEED)
         self.screen.set_top_scores(top_scores)
+        self.screen.set_display_text("START GAME!")
         self.screen_mode = HIGH_SCORE_DISPLAY
         self.start_game_start_time = 0
         self.high_score_start_time = 0
@@ -54,6 +55,7 @@ class PreGame:
             if id == self.start_button_id:
                 self.printMsg("GAME STARTED!!!!!!!!!", True)
                 self.game_in_progress = True
+                self.screen.clear_interrupt_animation()
 
             else:
                 idString = str(id)
@@ -70,20 +72,27 @@ class PreGame:
             self.start_game_start_time = time() * 1000
         elif (time() * 1000) - self.start_game_start_time >= START_GAME_TIME_MS:
             self.screen_mode = HIGH_SCORE_DISPLAY
-            self.screen.set_mode(3)  # high score mode
-            self.screen.set_scroll_speed(HIGH_SCORE_SCROLL_SPEED)
+            self.screen.set_mode(3)  # resets high score scroll
+            # self.screen.set_scroll_speed(HIGH_SCORE_SCROLL_SPEED)
             self.start_game_start_time = 0
 
-        self.screen.set_display_text("START GAME! (>^ ^)> o")
+        # self.screen.set_display_text("START GAME! (>^ ^)> o")
         self.screen.update()
+
+    def set_game_start_animation(self):
+        animation_data = {"animation": "kirby_sleep",
+                          "text": "START GAME! (>^ ^)> o",
+                          "scroll_speed": START_GAME_SCROLL_SPEED,
+                          "duration": START_GAME_TIME_MS}
+
+        self.screen.set_interrupt_animation(**animation_data)
 
     def update_high_score_display(self):
         if self.high_score_start_time == 0:
             self.high_score_start_time = time() * 1000
         elif (time() * 1000) - self.high_score_start_time >= HIGH_SCORE_TIME_MS:
             self.screen_mode = START_GAME_DISPLAY
-            self.screen.set_mode(0)
-            self.screen.set_scroll_speed(START_GAME_SCROLL_SPEED)
+            self.set_game_start_animation()
             self.high_score_start_time = 0
 
         # self.screen.high_score_update()
