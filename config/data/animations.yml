@@ -10,4 +10,4 @@ animations:
 - name: "kirby_sleep"
   path: "kirbysleep.gif"
   brightness: 0.5
-  text_color: [128, 128, 128]
+  text_color: [251, 147, 149]
