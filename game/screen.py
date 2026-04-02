@@ -12,6 +12,8 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
 
 HIGH_SCORE_PAUSE_TIME_MS = 2000
 BLINK_INTERVAL_MS = 250
+TEXT_SCROLL_INTERVAL = 50
+# scroll interval = ms to go 1 pixel
 
 
 class Screen(object):
@@ -47,8 +49,11 @@ class Screen(object):
         self.top_scores: List[ScoreRecord] = []
         self.high_score_text_offset = 0
         self.high_score_pause_time = 0
+        self.scroll_interval_start_time = 0
 
     def set_mode(self, mode):
+        self.scroll_interval_start_time = time.perf_counter() * 1000
+
         if mode > 3 or mode < 0:
             self.screen_mode = 0
         else:
@@ -119,11 +124,23 @@ class Screen(object):
 
         self.matrix = RGBMatrix(options=options)
 
+    def scroll_pixel_offset(self, scroll_speed):
+        now = time.perf_counter() * 1000
+
+        time_since_last_scroll = now - self.scroll_interval_start_time
+
+        pixel_offset = (time_since_last_scroll / TEXT_SCROLL_INTERVAL) * scroll_speed
+
+        if pixel_offset > 0:
+            self.scroll_interval_start_time = now
+
+        return pixel_offset
+
     def scroll_text_update(self):
         length = graphics.DrawText(self.offscreen_canvas, self.font,
                                    self.pregame_text_pos, 15, self.text_color, self.display_text)
 
-        self.pregame_text_pos -= self.scroll_speed
+        self.pregame_text_pos -= self.scroll_pixel_offset(self.scroll_speed)
 
         if self.pregame_text_pos + length < 0:
             self.set_random_text_color()
@@ -145,14 +162,15 @@ class Screen(object):
 
         if self.high_score_text_offset == 0:
             if self.high_score_pause_start_time == 0:
-                self.high_score_pause_start_time = time.time() * 1000
+                self.high_score_pause_start_time = time.perf_counter() * 1000
 
-            if (time.time() * 1000) - self.high_score_pause_start_time >= HIGH_SCORE_PAUSE_TIME_MS:
+            if (time.perf_counter() * 1000) - self.high_score_pause_start_time >= HIGH_SCORE_PAUSE_TIME_MS:
                 self.high_score_pause_start_time = 0
+                self.scroll_interval_start_time = time.perf_counter() * 1000
             else:
                 return
 
-        self.high_score_text_offset -= self.scroll_speed
+        self.high_score_text_offset -= self.scroll_pixel_offset(self.scroll_speed)
 
     def game_update(self):
         graphics.DrawText(self.offscreen_canvas, self.font,
@@ -165,7 +183,7 @@ class Screen(object):
                           2, 30, self.multiplier_color, bottom_text)
 
     def name_input_update(self):
-        is_cursor_visible = math.floor(time.time() * 1000 / BLINK_INTERVAL_MS) % 2 == 0
+        is_cursor_visible = math.floor(time.perf_counter() * 1000 / BLINK_INTERVAL_MS) % 2 == 0
 
         display_name = ""
         for index, letter in enumerate(self.current_name):
@@ -181,7 +199,7 @@ class Screen(object):
                           2, 25, self.text_color, display_name)
 
     def update(self):
-        current_time = time.time() * 1000
+        current_time = time.perf_counter() * 1000
         if current_time >= self.last_canvas_update + 16:
             self.offscreen_canvas = self.matrix.SwapOnVSync(
                 self.offscreen_canvas)

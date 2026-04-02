@@ -4,20 +4,21 @@ from rgbmatrix import graphics
 from time import perf_counter
 import yaml
 
-DEFAULT_TEXT_SCROLL_INTERVAL = 50
+ANIMATION_TEXT_SCROLL_INTERVAL = 50
+# scroll interval = ms to go 1 pixel
 
 
 class AnimationPlayer:
     def __init__(self, **kwargs):
         self.animation_dict: dict[str, Animation] = {}
         self.font = kwargs.get("font")
-        self.text_scroll_interval = kwargs.get("text_scroll_interval", DEFAULT_TEXT_SCROLL_INTERVAL)
 
         self.animation: Animation = None
         self.current_frame_index = 0
         self.current_frame: FrameData = None
         self.current_frame_start_time = 0
         self.animation_start_time = 0
+        self.scroll_interval_start_time = 0
         self.duration = 0
         self.text = None
         self.text_interval_start_time = 0
@@ -63,6 +64,9 @@ class AnimationPlayer:
             self.current_frame = self.animation.get_frame(self.current_frame_index)
             self.animation_start_time = perf_counter() * 1000
             self.current_frame_start_time = self.animation_start_time
+
+        if self.text is not None:
+            self.text_interval_start_time = perf_counter() * 1000
 
     def clear_animation(self):
         self.animation = None
@@ -110,15 +114,23 @@ class AnimationPlayer:
                                    self.text_position, 15, self.text_color, self.text)
 
         now = perf_counter() * 1000
-        if now - self.text_interval_start_time >= self.text_scroll_interval:
-            next_interval_elapsed_time = (now - self.text_interval_start_time) % self.text_scroll_interval
-            elapsed_frames = int((now - self.text_interval_start_time) / self.text_scroll_interval)
+        time_since_last_scroll = now - self.text_interval_start_time
 
-            self.text_position -= self.scroll_speed * elapsed_frames
-            self.text_interval_start_time = now - next_interval_elapsed_time
+        pixel_offset = round(time_since_last_scroll / ANIMATION_TEXT_SCROLL_INTERVAL) * self.scroll_speed
 
-            if self.text_position + length < 0:
-                self.text_position = self.canvas_width
+        if pixel_offset > 0:
+            self.text_position -= pixel_offset
+            self.text_interval_start_time = now
+
+        # if now - self.text_interval_start_time >= ANIMATION_TEXT_SCROLL_INTERVAL:
+        #     next_interval_elapsed_time = (now - self.text_interval_start_time) % ANIMATION_TEXT_SCROLL_INTERVAL
+        #     elapsed_frames = int((now - self.text_interval_start_time) / ANIMATION_TEXT_SCROLL_INTERVAL)
+
+        #     self.text_position -= self.scroll_speed * elapsed_frames
+        #     self.text_interval_start_time = now - next_interval_elapsed_time
+
+        if self.text_position + length < 0:
+            self.text_position = self.canvas_width
 
     def is_done(self) -> bool:
         return self.animation_start_time + self.duration <= perf_counter() * 1000
