@@ -14,7 +14,7 @@ animations:
 - name: "boom"
   path: "boom.gif"
   brightness: 0.5
-  text_color: [250, 100, 0]
+  text_color: [128, 128, 128]
 - name: "heartloss1"
   path: "heartloss1.gif"
   brightness: 0.5
