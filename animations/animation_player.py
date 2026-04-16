@@ -83,7 +83,7 @@ class AnimationPlayer:
         self.text_position = 0
 
     def update(self, canvas):
-        if self.animation is None or not self.text:
+        if self.animation is None and not self.text:
             return
 
         self.draw_frame(canvas)
@@ -121,13 +121,6 @@ class AnimationPlayer:
         if pixel_offset > 0:
             self.text_position -= pixel_offset
             self.text_interval_start_time = now
-
-        # if now - self.text_interval_start_time >= ANIMATION_TEXT_SCROLL_INTERVAL:
-        #     next_interval_elapsed_time = (now - self.text_interval_start_time) % ANIMATION_TEXT_SCROLL_INTERVAL
-        #     elapsed_frames = int((now - self.text_interval_start_time) / ANIMATION_TEXT_SCROLL_INTERVAL)
-
-        #     self.text_position -= self.scroll_speed * elapsed_frames
-        #     self.text_interval_start_time = now - next_interval_elapsed_time
 
         if self.text_position + length < 0:
             self.text_position = self.canvas_width
