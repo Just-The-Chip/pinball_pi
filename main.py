@@ -19,6 +19,7 @@ from comm.comm_handler import CommHandler
 from comm.constants import COMM_SERVOS, COMM_LIGHTS, COMM_SOLENOIDS, COMM_SOLENOIDS2
 from data.constants import IS_PLINKO_ACTIVE
 from player import Player
+from config.init.game_end import init_game_end
 # import serial
 import time
 
@@ -81,6 +82,7 @@ if __name__ == '__main__':
     init_plinko(game)
     init_slider(game)
     init_left_launcher(game)
+    init_game_end(game)
 
     while True:
         pregame.resume(score_repository.top_scores())

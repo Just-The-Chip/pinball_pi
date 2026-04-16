@@ -15,3 +15,15 @@ animations:
   path: "boom.gif"
   brightness: 0.5
   text_color: [250, 100, 0]
+- name: "heartloss1"
+  path: "heartloss1.gif"
+  brightness: 0.5
+  text_color: [250, 100, 0]
+- name: "heartloss2"
+  path: "heartloss2.gif"
+  brightness: 0.5
+  text_color: [250, 100, 0]
+- name: "heartloss3"
+  path: "heartloss3.gif"
+  brightness: 0.5
+  text_color: [250, 100, 0]

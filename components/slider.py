@@ -42,7 +42,7 @@ class Slider:
                 gameState.set_state("slider_timestamp", time() * 1000)
 
                 if progress > old_state:
-                    return HandlerResponse(messages=self.build_light_message(progress))
+                    return HandlerResponse(messages=self.build_light_message(progress), sounds=f"slide{progress}")
         return HandlerResponse()
 
     def handle_state(self, gameState):

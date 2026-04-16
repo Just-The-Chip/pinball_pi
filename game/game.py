@@ -136,10 +136,11 @@ class Game:
             self.ball_save_start_time = now + self.ball_save_pause_time
             self.screen.set_mode(0)
             self.screen.set_display_text("Ball Saved!")
+            self.player.play("ball_drain_save")
         else:
             self.printMsg("ROUND END ------------------------------")
-            self.execute_handlers(self.round_end_handlers)
             self.state.reduce_balls_remaining()
+            self.execute_handlers(self.round_end_handlers)
             if self.state.balls_remaining == 0:
                 self.player.mute()
                 print("PLAYER MUTED")
@@ -147,7 +148,7 @@ class Game:
                 self.player.play("round_end")
             self.round_start_time = now + self.round_end_pause_length
             self.screen.set_mode(0)
-            self.screen.set_display_text(f"BALL OUT!! Lives: {self.state.balls_remaining}")
+            #self.screen.set_display_text(f"BALL OUT!! Lives: {self.state.balls_remaining}")
 
     def loop(self):
         while self.in_progress:
