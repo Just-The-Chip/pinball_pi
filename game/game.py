@@ -58,7 +58,7 @@ class Game:
         self.ball_save_start_time = 0
 
         self.log_messages = False
-        self.round_end_pause_length = 3250
+        self.round_end_pause_length = 3500
         self.ball_save_pause_time = 2000
 
         self.player = Player
@@ -147,7 +147,7 @@ class Game:
             else:
                 self.player.play("round_end")
             self.round_start_time = now + self.round_end_pause_length
-            self.screen.set_mode(0)
+            #self.screen.set_mode(0)
             #self.screen.set_display_text(f"BALL OUT!! Lives: {self.state.balls_remaining}")
 
     def loop(self):

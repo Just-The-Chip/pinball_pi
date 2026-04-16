@@ -1,7 +1,7 @@
 # class representing a single sound, or a group of sounds
 from just_playback import Playback
 from pathlib import Path
-from random import random
+from random import uniform
 #from typing import List
 
 #PLAYBACK MODES:
@@ -37,7 +37,7 @@ class Sound:
             if self.sound_idx >= len(self.sounds):
                 self.sound_idx = 0
         if self.playback_mode == PLAY_RANDOM: # Set sound index to random number
-            self.sound_idx = int(random() * (len(self.sounds)-1))
+            self.sound_idx = int(uniform(0, len(self.sounds)-1))
 
     def stop(self):
         self.sounds[self.last_sound].stop()
