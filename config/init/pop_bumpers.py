@@ -22,6 +22,9 @@ left_target4 = PointsSwitch(points_value=100, light_group_id=16, pattern_id=3, p
 
 # Mario tube to second level
 mario_tube = SimpleTrigger(target_id=54, comm_name=COMM_SOLENOIDS2)
+mario_animation = {"animation": "mario"}
+def mario_handler(msg, gameState): return HandlerResponse(sounds="mario_tube", animation_interrupt=mario_animation)
+
 
 def init_pop_bumpers(game):
     game.register_message_handler(0, leftSling.handle_message)
@@ -45,4 +48,4 @@ def init_pop_bumpers(game):
     game.register_message_handler(9, left_target3.handle_message)
     # 10 is ascii for \n so we skip
     game.register_message_handler(11, left_target4.handle_message)
-    game.register_message_handler(55, lambda msg, gameState: HandlerResponse(sounds="mario_tube")) # play mario tube sound
+    game.register_message_handler(55, mario_handler)  # play mario tube sound

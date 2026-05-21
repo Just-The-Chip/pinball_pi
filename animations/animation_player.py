@@ -43,7 +43,7 @@ class AnimationPlayer:
             self.animation_dict[name] = animation
 
     def start_animation(self, **kwargs):
-        print("ANIMATION SETTONGS: ")
+        print("ANIMATION SETTONGS (the typo stays): ")
         print(kwargs)
         self.animation = self.animation_dict.get(kwargs.get("animation", None), None)
         self.text = kwargs.get("text", None)

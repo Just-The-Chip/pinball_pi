@@ -111,6 +111,9 @@ class Screen(object):
     def clear_interrupt_animation(self):
         self.animation_player.clear_animation()
 
+    def animation_is_done(self):
+        return self.animation_player.is_done()
+
     def setup_matrix(self):
         options = RGBMatrixOptions()
 
@@ -206,8 +209,8 @@ class Screen(object):
             self.last_canvas_update = current_time
             self.offscreen_canvas.Clear()
 
-            if self.animation_player.is_done():
-                self.animation_player.clear_animation()
+            if self.animation_is_done():
+                self.clear_interrupt_animation()
                 self.mode_update()
             else:
                 self.animation_player.update(self.offscreen_canvas)

@@ -17,7 +17,8 @@ LEFT_FLIPPER = "left_flipper"
 RIGHT_FLIPPER = "right_flipper"
 START_BUTTON = "start_button"
 
-GAME_OVER_DISPLAY_TIME_MS = 5000
+# GAME_OVER_DISPLAY_TIME_MS = 5000
+GAME_OVER_DISPLAY_TIME_MS = 3500
 SCORE_CHECK_DISPLAY_TIME_MS = 7500
 HIGH_SCORE_DISPLAY_TIME_MS = 5000
 EASTER_EGG_DISPLAY_TIME_MS = 9000
@@ -86,13 +87,17 @@ class PostGame:
                 self.postgame_in_progress = False
 
     def game_over_loop(self):
-        self.screen.set_display_text("Game over...")
+        # self.screen.set_display_text("Game over...")
         self.screen.update()
 
         if (time() * 1000) - self.game_over_start_time >= GAME_OVER_DISPLAY_TIME_MS:
             self.current_step = SCORE_CHECK_STEP
             self.screen.set_mode(0)
             self.score_check_start_time = time() * 1000
+            self.screen.clear_interrupt_animation()
+        elif self.screen.animation_is_done():
+            animation_data = {"animation": "heartloss1", "duration": GAME_OVER_DISPLAY_TIME_MS}
+            self.screen.set_interrupt_animation(**animation_data)
 
     def check_high_score(self):
         if self.score_repository.score_position(self.gameState.score) >= 10:

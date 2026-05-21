@@ -28,7 +28,10 @@ class MagBridgeSpinner:
         return HandlerResponse()
 
     def handle_spinner_stop(self, _message, _gameState):
-        return self.stop_spinner()
+        spinner_response = self.stop_spinner()
+        spinner_response.animation_interrupt = {"animation": "nyan", "duration": 2500}
+
+        return spinner_response
 
     def handle_cleanup(self, _gameState):
         return self.stop_spinner()

@@ -23,9 +23,15 @@ class Plinko:
         return HandlerResponse()
 
     def update_multiplier(self, gameState):
+        prev_multiplier = gameState.stacked_multiplier()
         gameState.set_multiplier("plinko", self.switch_group.triggered_count(gameState))
+        new_multiplier = gameState.stacked_multiplier()
 
-        return HandlerResponse()
+        animation_interrupt = None
+        if new_multiplier != prev_multiplier:
+            animation_interrupt = {"animation": f"x{new_multiplier}", "duration": 3000}
+
+        return HandlerResponse(animation_interrupt=animation_interrupt)
 
     def start_lift(self):
         return [(COMM_SOLENOIDS, build_component_message(self.lift_id))]
