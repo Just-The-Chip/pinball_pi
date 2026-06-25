@@ -2,7 +2,6 @@ from __future__ import annotations
 import csv
 from dataclasses import dataclass, asdict
 from datetime import datetime
-import os
 from pathlib import Path
 import tempfile
 import threading
@@ -55,7 +54,7 @@ class ScoreRepository:
                 })
 
     def load(self) -> None:
-        # default_path = f"{os.path.dirname(__file__)}/../data/default_scores.csv"
+        # default_path = f"{Path.cwd().resolve()}/../data/default_scores.csv"
         # path = self._path if self._path.exists() else Path(default_path)
         if not self._path.exists():
             self.scores = []

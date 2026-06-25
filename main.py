@@ -25,6 +25,7 @@ import time
 
 import sys
 import os
+from pathlib import Path
 
 START_BUTTON_ID = 2
 LEFT_FLIPPER_ID = 52
@@ -53,10 +54,10 @@ if __name__ == '__main__':
     multiplier_font.LoadFont("../rpi-rgb-led-matrix/fonts/5x8.bdf")
 
     interrupt_player = AnimationPlayer(font=font)
-    interrupt_player.load_animations(f"{os.path.dirname(__file__)}/config/data/animations.yml")
+    interrupt_player.load_animations(f"{Path.cwd().resolve()}/config/data/animations.yml")
     screen = Screen(font=font, multiplier_font=multiplier_font, animation_player=interrupt_player)
 
-    score_path = f"{os.path.dirname(__file__)}/../.pinball/scores.csv"
+    score_path = f"{Path.cwd().resolve()}/../.pinball/scores.csv"
     if not os.path.exists(os.path.dirname(score_path)):
         raise FileNotFoundError(f"Score directorey does not exist. Please create {os.path.dirname(score_path)}")
 

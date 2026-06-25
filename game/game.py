@@ -40,7 +40,7 @@ class Game:
     # Cleanup handlers will return a list of messages that need to be sent after the game ends.
     #   They may also do final modications to the state which could affect final score
 
-    def __init__(self, comm_handler, screen, Player) -> None:
+    def __init__(self, comm_handler, screen, sound_player: Player) -> None:
         # just start a new game for now but later we will wait for a start signal
         self.comm_handler = comm_handler
         self.screen = screen
@@ -61,7 +61,7 @@ class Game:
         self.round_end_pause_length = 3500
         self.ball_save_pause_time = 2000
 
-        self.player = Player
+        self.player = sound_player
 
     def register_launcher_callback(self, callback):
         self.launcher_callback = callback

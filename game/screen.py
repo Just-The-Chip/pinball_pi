@@ -4,11 +4,12 @@ from rgbmatrix import graphics, RGBMatrix, RGBMatrixOptions
 import time
 import sys
 import os
+from pathlib import Path
 import random
 from typing import List
 from .score_repository import ScoreRecord
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../..'))
+sys.path.append(os.path.abspath(str(Path.cwd().resolve()) + '/../..'))
 
 HIGH_SCORE_PAUSE_TIME_MS = 2000
 BLINK_INTERVAL_MS = 250
