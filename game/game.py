@@ -164,6 +164,8 @@ class Game:
             self.update_screen()
             self.state.commit_changes()
 
+            self.player.cleanup_finished()
+
             if self.state.balls_remaining == 0:
                 self.in_progress = False
 

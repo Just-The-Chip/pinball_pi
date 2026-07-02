@@ -2,6 +2,8 @@
 from just_playback import Playback
 from pathlib import Path
 from random import uniform
+# this is the library that just_playback uses to interact with minaudio
+from _ma_playback import lib as minaudio_lib
 #from typing import List
 
 #PLAYBACK MODES:
@@ -41,3 +43,17 @@ class Sound:
 
     def stop(self):
         self.sounds[self.last_sound].stop()
+
+    def cleanup_finished(self):
+        if self.playback_mode == LOOP:
+            return
+
+        # we have to access these "private" varaibles and functions manually in order to work around 
+        # a bug where the audio stream does not stop when the audio ends on its own which is almost always
+        for sound in self.sounds:
+            attrs = sound._Playback__ma_attrs
+
+            if attrs.audio_stream_ended_naturally:
+                minaudio_lib.stop_audio_stream(attrs)
+                attrs.audio_stream_ended_naturally = False
+                attrs.frame_offset = 0

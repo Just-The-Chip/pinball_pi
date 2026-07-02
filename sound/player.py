@@ -59,3 +59,7 @@ class Player:
     
     def unmute(self):
         self.muted = False
+
+    def cleanup_finished(self):
+        for sound in self.sound_lib.values():
+            sound.cleanup_finished()
