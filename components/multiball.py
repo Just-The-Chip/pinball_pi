@@ -56,7 +56,9 @@ class Multiball:
         bank_count = self.bank_count(gameState) + 1
 
         if bank_count > self.max_balls:
-            return self.release_multiball(gameState)
+            response = self.release_multiball(gameState)
+            self.add_release_animation(response)
+            return response
 
         gameState.set_state(self.bank_count_key, bank_count)
         self.printMsg(f"Multiball bank count: {bank_count}")
@@ -96,6 +98,7 @@ class Multiball:
 
         return HandlerResponse()
 
+    # this handler exclusively deals with drop target multiball activation and not max capacity
     def handle_state(self, gameState):
         dropTargetsActivated = self.drop_target_group.is_group_fully_triggered(gameState)
         if not dropTargetsActivated or gameState.balls_in_play > 1:
@@ -105,8 +108,7 @@ class Multiball:
 
         if self.bank_count(gameState) >= self.min_balls:
             result_queue.extend(self.release_multiball(gameState))
-            result_queue.animation_interrupt = {"animation": "boom",
-                                                "text": "Multiball!", "scroll_speed": 2, "duration": 2100}
+            self.add_release_animation(result_queue)
 
         return result_queue
 
@@ -117,6 +119,10 @@ class Multiball:
         gameState.set_state(self.reclose_time_key, 0)
 
         return result_queue
+
+    def add_release_animation(self, response: HandlerResponse):
+        response.animation_interrupt = {"animation": "boom",
+                                        "text": "Multiball!", "scroll_speed": 2, "duration": 2100}
 
     def release_multiball(self, gameState):
         self.printMsg("RELEASE MULTIBALL")

@@ -30,6 +30,6 @@ def set_game_inactive(gameState):
 def init_startup(game):
     game.register_startup_handler(set_game_active)
     game.register_cleanup_handler(set_game_inactive)
-    game.register_message_handler(2, force_end)
+    # game.register_message_handler(2, force_end)
     game.register_message_handler(15, ball_return)
     game.register_launcher_callback(launcher.trigger_component)
