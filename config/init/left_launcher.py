@@ -63,7 +63,7 @@ left_launcher = LeftLauncher(
 
 def animation_test(msg, gameState):
     print("Triggering animation")
-    return HandlerResponse(animation_interrupt={"animation": "storm", "text": "Test animation", "duration": 5000})
+    return HandlerResponse(animation_interrupt={"animation": "storm", "text": "Test animation", "duration": 5000},sounds="test_animation")
 
 
 def init_left_launcher(game):

@@ -38,6 +38,7 @@ class Player:
         self.sound_lib["slide4"] = Sound(self.sound_dir / 'component sounds/slider/5.wav', PLAY_ONCE)
         self.sound_lib["slide5"] = Sound(self.sound_dir / 'component sounds/slider/6.wav', PLAY_ONCE)
         self.sound_lib["slide7"] = Sound(self.sound_dir / 'component sounds/slider/7.wav', PLAY_ONCE)
+        self.sound_lib["test_animation"] = Sound(self.sound_dir / 'Notifications/test_animation.wav', PLAY_ONCE)
 
     # game calls this to play a sound
     def play(self, alias: str):
